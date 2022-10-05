@@ -1,5 +1,10 @@
 # 1. 파이썬의 특징
 # * 세미콜론(;)으로 끝을 맺지 않아도 됩니다.
+import re
+# 외부라이브러 사용법
+import pandas
+import pandas as pd
+
 print('Hello World')
 # * 세미콜런(;)으로 끝을 맺어도 됨.
 print('Hello World');
@@ -308,3 +313,229 @@ print(a)
 a = {'car' : ['bus', 'truck', 'taxi'], 'train' : 'ktx'}
 del a['car']
 print(a)
+
+# Set
+# 리스트로 처리
+a = set([1, 2, 3])
+print(a)
+print(type(a))
+
+# 튜ㄹㅗ 처리
+a = set((1, 2, 3))
+print(a)
+print(type(a))
+
+# 중복을 제거한다.
+# Set의 경우 중복된 원소를 제거한 값을 리턴한다.
+a = set([1, 1, 2, 3, 3, 4])
+print(a)
+
+# 순서가 없다
+a = set([4, 4, 3, 2, 1, 'a', 'b', 'a'])
+print(a)
+# 오류가 난다. 셋은 리스트가 아님
+# print(a[0])
+# 리스트 형변화을 이용해 처리
+b = list(a)
+print(b)
+print(b[0])
+
+# 합집합
+a = set([1, 2, 3])
+b = set([3, 4, 5])
+c = a.union(b)
+print(c)
+
+# 교집합
+c = a.intersection(b)
+print(c)
+
+# 차집합
+c = a.difference(b)
+print(c)
+
+# 제어문 for
+a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# for의 가장 기본형
+# 문제 : 1 ~ 10까지 출력하라
+for i in a :
+    print(i)
+
+# range 함수를 이용한 처리 1 ~ 10까지 처리를 위한 순서 처리
+for i in range(1, 11) :
+    print(i)
+
+# 문제 : 1부터 9까지 2씩 증가하면서 출력하시오.
+for i in range(1, 10, 2) :
+    print(i)
+
+# 문제 : 9부터 1까지 2씩 감소하면서 출력하시오
+for i in range(9, 0, -2) :
+    print(i)
+
+# 문제 : 1부터 10까지 자연수의 합을 구하시오
+result = 0
+for i in range(1, 11, 1) :
+    result += i
+    print(result)
+
+# 문제 : 구구단을 출력하시오
+for i in range(1, 10) :
+    for j in range(1, 10) :
+        print('{0} * {1} = {2}'.format(i, j, i*j))
+
+# while
+# 문제 : 1부터 10까지 출력하시오
+i = 1
+while (i < 11) : 
+    print(i)
+    i += 1
+
+# 문제 : 1부터 9까지 2씩 증가하면서 출력하시오
+i = 1
+while (i < 10) :
+    print(i)
+    i += 2
+
+# 문제 : 9부터 1까지 2씩 감소하면서 출력하시오
+i = 9
+while (i > 0) :
+    print(i)
+    i -= 2
+
+# 문제 : 1부터 10까지 자연수의 합을 구하시오
+i = 1
+result = 0
+while (i < 11) :
+    result += i
+    print('result = ', result)
+    i += 1
+
+# 문제 : 구구단을 출력하시오
+i = 1
+while (i < 10) :
+    j = 1
+    while (j < 10) :
+        print('{0} * {1} = {2}'.format(i, j, i*j))
+        j += 1
+    i += 1
+
+# if문
+# 문제 : x가 5보다 크면 True를 출력하시오
+x = 6
+if x > 5 :
+    print(True)
+
+# 문제 : x가 5보다 크면 True 아니면 False를 출력하시오
+x = 4
+if x > 5 :
+    print(True)
+else :
+    print(False)
+
+# 문제 : x가 5보다 작으면 '5미만' 5이면 '5' 나머지는 '5이상' 이라고 출력하시오
+x = 4
+if (x < 5) :
+    print('5미만')
+elif (x == 5) :
+    print('5')
+else :
+    print('5이상')
+
+# 문제 : 점수(x)가 90점 이상이면 'A', 80점 이상이면 'B', 70점 이상이면 'C' 60점 이상이면 'D'
+# 나머지는 'F'로 출력하시오
+x = 95
+if x >= 90 :
+    print('A')
+elif x >= 80 :
+    print('B')
+elif x >= 70 :
+    print('C')
+elif x >= 60:
+    print('D')
+else : 
+    print('F')
+
+# 문제 : A리스트에느 1반 학생들의 수학 점수가 저장되어 있다. 점수가 90점이상이면 'A' 80점 이상이면 'B'
+# 70점 이상이면 'C' 60점이상이면 'D' 나머지는 'F'로 출력하시오
+
+A = [80, 95, 70, 55, 63]
+for i in A :
+    print(i)
+
+for i in A :
+    if i >= 90 :
+        print(i, 'A')
+    elif i >= 80 :
+        print(i, 'B')
+    elif i >= 70 :
+        print(i, 'C')
+    elif i >= 60:
+        print(i, 'D')
+    else : 
+        print(i, 'F')
+
+# List Comprehension
+for i in range(1, 11, 1):
+    a.append(i)
+print(a)
+
+a = [i for i in range(1, 11, 1)]
+print(a)
+
+a = []
+for i in range(1, 10) :
+    a.append(i ** 2)
+print(a)
+
+a = [i ** 2 for i in range(1, 10)]
+print(a)
+
+a = [90, 39, 48, 70, 82, 100]
+
+result = [i for i in a]
+print(result)
+
+result = [i for i in a if i >= 80]
+print(result)
+
+# 함수
+def function1(x) : 
+    print(x + 1)
+
+def function2(x) :
+    result = x + 1
+    return result
+
+def function3(x) :
+    result1 = x + 1
+    result2 = x + 2
+    return result1, result2
+
+def function4(x):
+    for i in x :
+        print(i)
+
+# args를 이용한 구현
+def function5(*args) :
+    for i in args :
+        print(i)
+
+function1(1)
+a = function2(1)
+print(a)
+
+a, b = function3(1)
+print(a)
+print(b)
+
+a = [1, 3, 5, 7, 4, 'd', 2, 60]
+function4(a)
+function5(1, 3, 5, 7, 4, 'd', 2, 60)
+
+df_sample1 = pandas.DataFrame({'a' : [1, 2, 3], 'b' : [4, 5, 6]})
+df_sample2 = pd.DataFrame({'a' : [1, 2, 3], 'b' : [4, 5, 6]})
+
+print(df_sample1.head())
+print(df_sample2.head())

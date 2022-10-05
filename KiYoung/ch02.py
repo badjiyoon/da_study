@@ -248,7 +248,7 @@ elif x >= 60:
     print('D')
 else : 
     print('F')
-
+ 
 
 A = [80, 95, 70, 55, 63]
 for i in A :

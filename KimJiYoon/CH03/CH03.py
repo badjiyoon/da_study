@@ -106,3 +106,41 @@ print(df)
 # 에러 두개의 시리즈로는 안만들어짐
 # print(df['a', 'b'])
 
+# loc과 iloc을 이용한 원하는 위치의 데이터 추출
+df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]})
+print(df)
+# 에러
+# df['a', 'b']
+print(df[['a', 'b']])
+print(type(df[['a', 'b']]))
+
+# print(df[0])
+
+# 인엑스에서 뽑기
+print(df.loc[0])
+# 슬라이스도 가능
+print(df.loc[2:4])
+# 인덱스가문자로 이루어진 데이터 프레임 생성
+index = ['a', 'b', 'd', 'c', 'e', 'f', 'g', 'g', 'h', 'i']
+df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]},
+                  index=index)
+print(df)
+# 불가 인덱스가 바껴서
+# print(df.loc[0])
+print(df.loc['g'])
+print(df.loc['c':])
+print(df.loc[['g', 'i'], ['a', 'c']])
+
+# 처음부터 5번쨰까지의 데이터와 첫번쨰 열과 세번쨰 열의 데이터를 추출하시오
+df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]})
+print(df)
+
+print(df.iloc[:5, [0, 2]])
+
+index1 = ['a', 'b', 'd', 'c', 'e', 'f', 'g', 'g', 'h', 'i']
+df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]},
+                  index=index1)
+
+print(df)
+print(df.iloc[:5, [0, 2]])
+

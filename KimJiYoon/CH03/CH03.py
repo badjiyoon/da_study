@@ -140,7 +140,26 @@ print(df.iloc[:5, [0, 2]])
 index1 = ['a', 'b', 'd', 'c', 'e', 'f', 'g', 'g', 'h', 'i']
 df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]},
                   index=index1)
-
 print(df)
 print(df.iloc[:5, [0, 2]])
 
+# 조건에 맞는 데이터 추출
+df = pd.DataFrame({'a': [i for i in range(1, 11)], 'b': [i for i in range(11, 21)], 'c': [i for i in range(21, 31)]})
+print(df)
+
+print(df[['a', 'c']])
+# 3보다 큰 데이터를 출력하라
+print(df[df['a'] >= 3])
+# a가 3이상인 데이터 중 a,열만 출력하시오
+print(df[df['a'] >= 3][['a', 'c']])
+# a가 3이상이고 b가 16미만인 데이터를 출력하시오
+print(df[(df['a'] >= 3) & (df['b'] < 16)])
+a = (df['a'] >= 3) & (df['b'] < 16)
+print(a)
+type(a)
+# 같은 방식 시리즈로 DataFrame에서 뽑아온다.
+print(df[a])
+# a가 3이하 이거나 7이상인 데이터를 출력하시오.
+print(df[(df['a'] <= 3) | (df['a'] >= 7)])
+# a가 3이상이고 b가 16미만이거나 c가 30인 데이터
+print(df[(df['a'] >= 3) & ((df['b'] < 16) | (df['c'] == 30))])

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import copy
 
 df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
 print(type(df))
@@ -27,5 +28,81 @@ df5 = pd.DataFrame({'company': ['abc', '회사', 123], '직원수': [400, np.NaN
 print(df5)
 
 # 컬럼명 추출 / 변경
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
 
+# 컬럼 보기
+print(df.columns)
+print(df.columns[1])
+
+# 문제 : 컬럼명인 a, b, c를 d, e, f로 바꾸어라
+df.columns = ['d', 'e', 'f']
+print(df)
+
+df.columns = ['디', 'e', '에프']
+print(df)
+
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
+df.columns = ['d', 'e', 'f']
+print(df)
+
+print(df.rename(columns={'d': '디', 'f': '에프'}))
+print(df)
+
+# inplace 옵션을 주어야 헤더 치환됨
+df.rename(columns={'d': '디', 'f': '에프'}, inplace=True)
+print(df)
+
+# copy를 이용한 데이터 복사
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
+df.columns = ['d', 'e', 'f']
+print(df)
+
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
+df.rename(columns={'a': '에이'}, inplace=True)
+print(df)
+
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+# 얕은 복사
+# df2 = df
+# 깊은 복사
+df2 = copy.deepcopy(df)
+# df2 = df.copy()
+
+print(df)
+print(df2)
+df.columns = ['d', 'e', 'f']
+print(df)
+print(df2)
+
+# 시리즈
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
+print(df['a'])
+print(type(df['a']))
+
+# 시리즈 생성 방법
+# 인덱스 와 짝으로 생성됨
+a = pd.Series([1, 2, 3, 1, 2, 3])
+print(a)
+
+a = pd.Series([1, 2, 3, 1, 2, 3], index=['a', 'b', 'c', 'd', 'e', 'f'])
+print(a)
+print(a['e'])
+
+# 유일한 값 찾기
+df = pd.DataFrame({'a': [1, 2, 3, 1, 2, 3], 'b': [4, 5, 6, 6, 7, 8], 'c': [7, 8, 9, 10, 11, 12]})
+a = df['a']
+print(a)
+print(type(a))
+print(a.unique())
+print(a.unique()[2])
+
+df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6], 'c': [7, 8, 9]})
+print(df)
+# 에러 두개의 시리즈로는 안만들어짐
+# print(df['a', 'b'])
 

@@ -178,7 +178,7 @@ print(df.dtypes)
 df['판매량 보정'] = df['판매량'] + 1
 df['방문자수'] = pd.to_numeric(df['방문자수'], errors='coerce')
 print(df.dtypes)
-print(df))
+print(df)
 df.fillna(0, inplace=True)
 df = df.astype({'방문자수': 'int'})
 print(df)

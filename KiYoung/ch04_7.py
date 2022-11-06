@@ -34,3 +34,4 @@ df['petal_length2'] = df['petal_length'].apply(functionA)
 df['petal_length3'] = df['petal_length'].apply(functionB)
 sns.scatterplot(data=df, x='sepal_width', y='sepal_length', hue='species', size='petal_length3')
 sns.relplot(data=df,  x='sepal_width', y='sepal_length', col='species')
+ 

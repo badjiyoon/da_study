@@ -9,3 +9,4 @@ df = sns.load_dataset('flights')
 print(df.head())
 # 결측치 확인
 print(df.isnull().sum())
+ 

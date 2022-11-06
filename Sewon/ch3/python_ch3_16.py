@@ -1,0 +1,1 @@
+{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyNNYovXZHktwBV7UkEWn7L/"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":null,"metadata":{"id":"IDnYgzHOhoW6"},"outputs":[],"source":["CH03_16. 파일호출_저장"]}]}

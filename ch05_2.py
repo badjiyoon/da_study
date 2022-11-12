@@ -7,7 +7,7 @@ df =sns.load_dataset('titanic')
 df.head()
 
 df.describe()
-
+ 
 df.info()
 
 train_df = df[:800]

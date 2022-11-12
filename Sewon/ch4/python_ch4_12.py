@@ -71,6 +71,7 @@ plt.show()
 #그림 크기 변경
 sns.displot(data = df, x = 'sepal_length', height = 5, aspect = 3)
 plt.show()
+
 '''
 height: 높이
 aspect: 막대 한 개의 가로 길이

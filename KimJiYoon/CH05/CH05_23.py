@@ -68,3 +68,60 @@ test_df['age'] = test_df['age'].apply(function1)
 
 print(train_df.head())
 print(test_df.head())
+
+from sklearn.tree import DecisionTreeClassifier
+
+X_train = train_df.drop(['survived'], axis=1)
+Y_train = train_df['survived']
+X_test = test_df.drop(['survived'], axis=1)
+Y_test = test_df['survived']
+
+print(X_train.head())
+print(Y_train.head())
+
+# 모델 생성 및 학습
+decision_tree = DecisionTreeClassifier()
+decision_tree.fit(X_train, Y_train)
+
+# 모델 정확도 검증
+print(decision_tree.score(X_train, Y_train))
+print(decision_tree.score(X_test, Y_test))
+
+# 실제 값 예측값 비교 구현
+Y_pred = decision_tree.predict(X_test)
+print(Y_pred)
+print(Y_test)
+print(len(Y_pred))
+print(len(Y_test))
+
+Y_test_list = list(Y_test)
+print(Y_pred[0])
+print(Y_test_list[0])
+
+total = 0
+for i in range(len(Y_pred)):
+    if Y_pred[i] == Y_test_list[i]:
+        total += 1
+    else:
+        pass
+print(total)
+print(total / len(Y_pred))
+
+from sklearn.tree import export_graphviz
+
+export_graphviz(
+    decision_tree,
+    out_file='titanic.dot',
+    feature_names=['pclass', 'sex', 'age'],
+    class_names=['Unsurvived', 'Survived'],
+    filled=True
+)
+
+import graphviz
+f = open('titanic.dot')
+dot_graph = f.read()
+dot = graphviz.Source(dot_graph)
+dot.format = 'png'
+dot.render(filename='titanic_tree')
+print(dot)
+

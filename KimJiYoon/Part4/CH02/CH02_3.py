@@ -56,7 +56,7 @@ beta = np.array([2, 3, 4, 5]).reshape(4, 1)
 noise = np.random.randn(100, 1)
 
 X = np.random.randn(100, 4)
-y = bias + X.dat(beta)
+y = bias + X.dot(beta)
 y_with_noise = y + noise
 print(X[:10])
 print(y[:10])

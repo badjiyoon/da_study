@@ -22,7 +22,7 @@ import pandas as pd
 # df = pd.read_csv('../../comFiles/make_column_name.csv', index_col=0, names=['품목', '크기', '금액', '수수료'])
 # print(df)
 
-df = pd.read_csv('../../comFiles/과일가게.csv', usecols=['품목', '크기'])
+df = pd.read_csv('../../../comFiles/과일가게.csv', usecols=['품목', '크기'])
 # print(df.head())
 
 # 파일저장

@@ -8,7 +8,6 @@ np.random.seed(2021)
 
 #1. Data
 #1.1 Data load
-
 from sklearn.datasets import load_diabetes
 
 diabetes=load_diabetes()
@@ -30,7 +29,6 @@ data[0]
 target[0]
 
 #1.2 Data EDA
-
 df=pd.DataFrame(data, columns=diabetes["feature_names"])
 df.describe()
 
@@ -63,7 +61,6 @@ print("test ratio : {:.2f}".format(len(test_data)/len(data)))
 
 #2. Multivariate Regression
 #2.1 학습
-
 from sklearn.linear_model import LinearRegression
 
 multi_regressor = LinearRegression()
@@ -79,7 +76,6 @@ multi_test_pred = multi_regressor.predict(test_data)
 
 #2.4 평가
 #mean_squared_error
-
 from sklearn.metrics import mean_squared_error
 
 multi_train_mse = mean_squared_error(multi_train_pred, train_target)
@@ -90,7 +86,6 @@ print(f"Multi Regression Test MSE is {multi_test_mse:.4f}")
 
 #3. Ridge Regression
 #3.1 학습
-
 from sklearn.linear_model import Ridge
 
 ridge_regressor = Ridge()
@@ -114,7 +109,6 @@ print(f"Ridge Regression Test MSE is {ridge_test_mse:.4f}")
 
 #4. LASSO Regression
 #4.1 학습
-
 from sklearn.linear_model import Lasso
 
 lasso_regressor = Lasso()

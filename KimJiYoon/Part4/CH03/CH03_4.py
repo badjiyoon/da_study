@@ -135,6 +135,7 @@ test_acc = accuracy_score(test_target, test_pred)
 print(f'Train accuracy is : {train_acc:.2f}')
 print(f'Test accuracy is : {test_acc:.2f}')
 
+
 # 4. Logistic Regression(OVR)
 ovr_logit = LogisticRegression(multi_class='ovr')
 ovr_logit.fit(train_data, train_target)

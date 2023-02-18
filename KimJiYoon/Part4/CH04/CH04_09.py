@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 
@@ -37,6 +38,7 @@ print(f'test_data size : {len(test_target)}, {len(test_target) / len(data): .2f}
 # 2. Random Forest
 random_forest = RandomForestClassifier()
 random_forest.fit(train_data, train_target)
+
 # 2.2 Feature Importance
 print(f'random_forest.feature_importances_ : {random_forest.feature_importances_}')
 feature_importance = pd.Series(random_forest.feature_importances_)
@@ -58,7 +60,8 @@ plt.show()
 train_pred = random_forest.predict(train_data)
 test_pred = random_forest.predict(test_data)
 # 실제 데이터 보기
-plt.imshow(train_data[4].reshape(8, 8), cmap='gray')
+plt.imshow(train_data[4].reshape(8, 8), cmap="gray")
+plt.show()
 print(f'train_pred[4] : {train_pred[4]}')
 # 2.4 평가
 train_acc = accuracy_score(train_target, train_pred)
@@ -75,21 +78,21 @@ test_acc = accuracy_score(test_target, test_pred)
 
 # 3.1 탐색 범위 선정
 # 탐색할 값들의 Argument와 범위를 정합니다.
-param = {
-    'n_estimators': [i for i in range(100, 1000, 200)],
-    'max_depth': [i for i in range(10, 50, 10)],
+params = {
+    "n_estimators": [i for i in range(100, 1000, 200)],
+    "max_depth": [i for i in range(10, 50, 10)],
 }
 
-print(f'param : {param}')
+print(f'param : {params}')
 random_forest = RandomForestClassifier()
 
 # 3.2 탐색
 # 탐색 시작 cv는 k-fold의 K값
-grid = GridSearchCV(estimator=random_forest, param_grid=param, cv=3)
+grid = GridSearchCV(estimator=random_forest, param_grid=params, cv=3)
 grid = grid.fit(train_data, train_target)
 
 # 3.3 결과
-print(f"Best score of parmeter search is : {grid.best_score_: .4f}")
+print(f"Best score of paramter search is: {grid.best_score_:.4f}")
 print("Best parameter of best score is")
 print(f"\t max_depth: {grid.best_params_['max_depth']}")
 print(f"\t n_estimators: {grid.best_params_['n_estimators']}")

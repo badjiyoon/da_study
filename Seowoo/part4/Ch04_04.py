@@ -40,12 +40,23 @@ for idx, pair in enumerate(pair_combs):
 ## 2. Decision Tree
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
+# 지니 지수를 이용해 학습
 gini_tree = DecisionTreeClassifier()
+
 ### 2.1 학습
 gini_tree.fit(train_data, train_target)
 plt.figure(figsize=(10,10))
 plot_tree(gini_tree, feature_names=iris["feature_names"], class_names=iris["target_names"])
 ### 2.2 Arguments
+# DecisionTreeClassifier에서 주로 탐색하는 argument
+# - criterion
+# -- 어떤 정보 이득을 기준으로 데이터를 나눌지 결정
+# -- gini, entropy
+# - max_depth
+# -- 트리의 최대 깊이 결정
+# - min_samples_split
+# -- 노드가 나눠질 수 있는 최소 데이터 갯수 결정
+
 #### 2.2.1 max_depth
 depth_1_tree = DecisionTreeClassifier(max_depth=1)
 depth_1_tree.fit(train_data, train_target)
@@ -64,6 +75,7 @@ fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 10))
 plot_tree(gini_tree, feature_names=iris["feature_names"], class_names=iris["target_names"], ax=axes[0])
 plot_tree(entropy_tree, feature_names=iris["feature_names"], class_names=iris["target_names"], ax=axes[1])
 plt.show()
+
 ### 2.3 예측
 trees = [
     ("gini tree", gini_tree),
@@ -79,6 +91,7 @@ for tree_name, tree in trees:
     train_preds += [train_pred]
     test_preds += [test_pred]
 train_preds
+
 ### 2.3 평가하기
 from sklearn.metrics import accuracy_score
 for idx, (tree_name, tree) in enumerate(trees):
@@ -87,8 +100,10 @@ for idx, (tree_name, tree) in enumerate(trees):
     print(tree_name)
     print("\t", f"train accuracy is {train_acc:.2f}")
     print("\t", f"test accuracy is {test_acc:.2f}")
+
 ### 2.4 Feature Importance
 iris["feature_names"]
+# 각 변수에 대한 중요도
 gini_tree.feature_importances_
 gini_feature_importance = pd.Series(gini_tree.feature_importances_, index=iris["feature_names"])
 gini_feature_importance
@@ -108,13 +123,14 @@ def plot_decision_boundary(pair_data, pair_tree, ax):
     Z = pair_tree.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
     cs = ax.contourf(xx, yy, Z, cmap=plt.cm.RdYlBu)
-
+    print(cs)
     # Plot the training points
     for i, color in zip(range(3), "ryb"):
         idx = np.where(train_target == i)
         ax.scatter(pair_data[idx, 0], pair_data[idx, 1], c=color, label=iris["target_names"][i],
-                    cmap=plt.cm.RdYlBu, edgecolor='black', s=15)
+                   cmap=plt.cm.RdYlBu, edgecolor='black', s=15)
     return ax
+
 fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15,10))
 
 pair_combs = [

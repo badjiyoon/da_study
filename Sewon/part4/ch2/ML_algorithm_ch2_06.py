@@ -30,6 +30,8 @@ target[0]
 
 #1.2 Data EDA
 df=pd.DataFrame(data, columns=diabetes["feature_names"])
+df.head() #5개 로우까지 볼 수 있음
+df.isnull() #null 있는지 확인
 df.describe()
 
 #1.3 Data split
@@ -68,7 +70,7 @@ multi_regressor.fit(train_data, train_target)
 
 #2.2 회귀식 확인
 multi_regressor.intercept_
-multi_regressor.coef_
+multi_regressor.coef_ #bias
 
 #2.3 예측
 multi_train_pred = multi_regressor.predict(train_data)

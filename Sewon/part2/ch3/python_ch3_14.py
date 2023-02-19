@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1ARzhaNf4XDn7MFZVC2PqmPwrhxSovGCe
 """
 
-pip install pandas
+#pip install pandas
 
 """#CH03_14. 그룹화"""
 

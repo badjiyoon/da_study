@@ -47,8 +47,9 @@ for idx, pair in enumerate(pair_combs):
         x=train_data[:, x], y=train_data[:, y], c=train_target, edgecolor='black', s=15
     )
     ax.set_xlabel(iris["feature_names"][x])
-    ax.set_ylabel(iris["feature_names"][y])
-    
+    ax.set_ylabel(iris["feature_names"][y])   
+plt.show()
+
 #2. Decision Tree
 
 from sklearn.tree import DecisionTreeClassifier, plot_tree
@@ -60,6 +61,7 @@ gini_tree.fit(train_data, train_target)
 
 plt.figure(figsize=(10,10))
 plot_tree(gini_tree, feature_names=iris["feature_names"], class_names=iris["target_names"])
+plt.show()
 
 #2.2 Arguments
 """
@@ -75,13 +77,14 @@ depth_1_tree = DecisionTreeClassifier(max_depth=1)
 depth_1_tree.fit(train_data, train_target)
 
 plot_tree(depth_1_tree, feature_names=iris["feature_names"], class_names=iris["target_names"])
+plt.show()
 
 #2.2.2 min_samples_split
-
 sample_50_tree = DecisionTreeClassifier(min_samples_split=50)
 sample_50_tree.fit(train_data, train_target)
 
 plot_tree(sample_50_tree, feature_names=iris["feature_names"], class_names=iris["target_names"])
+plt.show()
 
 #2.2.3 criterion
 entropy_tree = DecisionTreeClassifier(criterion="entropy")
@@ -107,7 +110,6 @@ for tree_name, tree in trees:
     test_pred =  tree.predict(test_data)
     train_preds += [train_pred]
     test_preds += [test_pred]
-
 train_preds
 
 #2.3 평가하기
@@ -122,6 +124,8 @@ for idx, (tree_name, tree) in enumerate(trees):
 
 #2.4 Feature Importance
 iris["feature_names"]
+
+#각 변수의 중요도
 gini_tree.feature_importances_
 gini_feature_importance = pd.Series(gini_tree.feature_importances_, index=iris["feature_names"])
 gini_feature_importance
@@ -132,8 +136,10 @@ sample_50_feature_importance = pd.Series(
     sample_50_tree.feature_importances_,
     index=iris["feature_names"]
 )
+plt.show()
 
 sample_50_feature_importance.plot(kind="barh", title="sample=50 tree feature importance")
+plt.show()
 
 #3. 시각화
 def plot_decision_boundary(pair_data, pair_tree, ax):
@@ -153,8 +159,7 @@ def plot_decision_boundary(pair_data, pair_tree, ax):
                     cmap=plt.cm.RdYlBu, edgecolor='black', s=15)
     return ax
 
-    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15,10))
-
+fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15,10))
 pair_combs = [
     [0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]
 ]
@@ -167,4 +172,4 @@ for idx, pair in enumerate(pair_combs):
     ax = plot_decision_boundary(pair_data, pair_tree, ax)
     ax.set_xlabel(iris["feature_names"][x])
     ax.set_ylabel(iris["feature_names"][y])
-
+plt.show()

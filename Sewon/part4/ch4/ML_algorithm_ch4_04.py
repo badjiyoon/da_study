@@ -29,7 +29,7 @@ from sklearn.tree import DecisionTreeRegressor, plot_tree
 
 #2.1 분할이 없을 경우
 #분할이 없는 경우에는 학습 데이터의 평균으로 예측을 합니다.
-viz_test_pred = np.repeat(label.mean(), len(viz_test_data))
+viz_test_pred = np.repeat(label.mean(), len(viz_test_data)) #분할 전이므로 전체 평균
 
 #Plot으로 보면 강의에서 본 하나의 선이 생깁니다.
 plt.figure(figsize=(8, 8))
@@ -50,6 +50,9 @@ first_divide = DecisionTreeRegressor(max_depth=1)
 first_divide.fit(data, label)
 first_divide 
 type(first_divide)
+
+#분할 기준
+first_divide.tree_.threshold
 
 first_divide_pred = first_divide.predict(viz_test_data)
 first_divide_pred
@@ -74,6 +77,9 @@ plot_tree(first_divide)
 second_divide = DecisionTreeRegressor(max_depth=2)
 
 second_divide.fit(data, label)
+
+#분할 기준
+second_divide.tree_.threshold
 
 second_divide_pred = second_divide.predict(viz_test_data)
 

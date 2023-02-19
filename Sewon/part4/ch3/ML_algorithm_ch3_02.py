@@ -12,7 +12,7 @@ from sklearn.datasets import load_breast_cancer
 
 cancer=load_breast_cancer()
 
-type(load_breast_cancer)
+type(cancer)
 cancer["feature_names"]
 
 '''

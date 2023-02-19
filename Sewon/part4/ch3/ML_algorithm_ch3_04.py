@@ -76,11 +76,15 @@ y_min, y_max = X[:,1].min() - 0.5, X[:,1].max() + 0.5
 
 plt.figure(1, figsize=(10, 10))
 
+len(X[:, 0])
+len(X[:, 1])
+
 plt.scatter(X[:, 0], X[:, 1], c=ovr_logit.predict(X), edgecolors='k', cmap=plt.cm.Paired)
 plt.xlabel('Sepal length')
 plt.ylabel('Sepal width')
 plt.xlim(x_min, x_max)
 plt.ylim(y_min, y_max)
+plt.show()
 
 coef = ovr_logit.coef_
 intercept = ovr_logit.intercept_

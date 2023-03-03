@@ -22,7 +22,7 @@ train_data, test_data, train_target, test_target = train_test_split(
     data, target, train_size=0.7, random_state=2021, stratify=target
 )
 print("train data 개수:", len(train_data))
-print("train data 개수:", len(test_data))
+print("ｔｅｓｔ data 개수:", len(test_data))
 ### 1.4 시각화
 fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15,10))
 
@@ -115,6 +115,7 @@ sample_50_feature_importance = pd.Series(
 sample_50_feature_importance.plot(kind="barh", title="sample=50 tree feature importance")
 ## 3. 시각화
 def plot_decision_boundary(pair_data, pair_tree, ax):
+
     x_min, x_max = pair_data[:, 0].min() - 1, pair_data[:, 0].max() + 1
     y_min, y_max = pair_data[:, 1].min() - 1, pair_data[:, 1].max() + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),

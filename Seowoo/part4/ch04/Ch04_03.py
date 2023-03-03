@@ -14,7 +14,6 @@ label = np.sin(data).ravel()
 label[::5] += 3 * (0.5 - np.random.uniform(0, 1, 16))
 
 #
-
 plt.figure(figsize=(8, 8))
 plt.scatter(data, label, edgecolor="black", c="darkorange")
 plt.show()

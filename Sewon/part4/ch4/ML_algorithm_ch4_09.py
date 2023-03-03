@@ -31,6 +31,7 @@ samples = data[:10].reshape(10, 8, 8)
 fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(20, 10))
 for idx, sample in enumerate(samples):
     axes[idx//5, idx%5].imshow(sample, cmap="gray")
+plt.show()
 
 #1.3 Data split
 
@@ -62,6 +63,7 @@ feature_importance.head(10)
 feature_importance = feature_importance.sort_values(ascending=False)
 feature_importance.head(10)
 feature_importance.head(10).plot(kind="barh")
+plt.show()
 
 image = random_forest.feature_importances_.reshape(8, 8)
 
@@ -103,6 +105,8 @@ min_samples_split: 노드가 나눠질 수 있는 최소 데이터 개수를 정
 이 때 사용할 수 있는 것이 sklearn.model_selection의 GridSearchCV 함수입니다.
 """
 
+#GridSearchCV: 머신러닝에서 모델의 성능 향상을 위해 쓰이는 기법
+#사용자가 직접 모델의 하이퍼 파라미터의 값을 리스트로 입력하면 값에 대한 경우의 수마다 예측 성능을 측정
 from sklearn.model_selection import GridSearchCV
 
 #3.1 탐색 범위 선정
@@ -112,13 +116,16 @@ params = {
     "max_depth": [i for i in range(10, 50, 10)],
 }
 params
+#max_depth: 10, 20, 30, 40 / n_estimators: 100, 200, 300, 400, 500
+
 
 #탐색에 사용할 모델을 생성합니다.
 random_forest = RandomForestClassifier()
 
 #3.2 탐색
-#탐색을 시작합니다. cv는 k-fold의 k값입니다.
+#탐색을 시작합니다. cv는 k-fold의 k값
 grid = GridSearchCV(estimator=random_forest, param_grid=params, cv=3)
+# 4*5=20개의 경우의 수* CV 3 = 60개 모델 확인
 grid = grid.fit(train_data, train_target)
 grid
 

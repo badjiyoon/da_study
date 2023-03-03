@@ -17,16 +17,36 @@ housing = load_boston()
 
 data, target = housing["data"], housing["target"]
 
+data.shape
+data=data[:2000]
+target=target[:2000]
+
 #1.2 Data EDA
 pd.DataFrame(data, columns=housing["feature_names"]).describe()
 pd.Series(target).describe()
+"""
+CRIM: 범죄율
+INDUS: 비소매상업지역 면적 비율
+NOX: 일산화질소 농도
+RM: 주택당 방 수
+LSTAT: 인구 중 하위 계층 비율
+B: 인구 중 흑인 비율
+PTRATIO: 학생/교사 비율
+ZN: 25,000 평방피트를 초과 거주지역 비율
+CHAS: 찰스강의 경계에 위치한 경우는 1, 아니면 0
+AGE: 1940년 이전에 건축된 주택의 비율
+RAD: 방사형 고속도로까지의 거리
+DIS: 직업센터의 거리
+TAX: 재산세율
+"""
 
 fig, axes = plt.subplots(nrows=2, ncols=7, figsize=(20, 10))
 for i, feature_name in enumerate(housing["feature_names"]):
     ax = axes[i // 7, i % 7]
     ax.scatter(data[:, i], target)
-    ax.set_xlabel(feature_name)
-    ax.set_ylabel("price")
+    ax.set_ylabel(feature_name)
+    ax.set_xlabel("price")
+plt.show()
 
 #1.3 Data Split
 from sklearn.model_selection import train_test_split
@@ -48,6 +68,7 @@ train_pred = rf_regressor.predict(train_data)
 test_pred = rf_regressor.predict(test_data)
 
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+#가로축: predict, 세로축: 예측해야 하는 값
 
 axes[0].scatter(train_target, train_pred)
 axes[0].set_xlabel("predict")
@@ -56,6 +77,7 @@ axes[0].set_ylabel("real")
 axes[1].scatter(test_target, test_pred)
 axes[1].set_xlabel("predict")
 axes[1].set_ylabel("real")
+plt.show()
 
 #2.3 평가
 from sklearn.metrics import mean_squared_error
@@ -69,6 +91,7 @@ print(f"test mean squared error is {test_mse:.4f}")
 #2.4 Feature Importance
 feature_importance = pd.Series(rf_regressor.feature_importances_, index=housing["feature_names"])
 feature_importance.sort_values(ascending=True).plot(kind="barh")
+plt.show()
 
 #3. Best Parameter
 from sklearn.model_selection import GridSearchCV
@@ -89,7 +112,9 @@ params = {
     "criterion": ["mae", "mse"],
     "max_depth": [i for i in range(1, 10, 2)],
 }
-params #4*2*3=24개
+params #4*2*5=40개
+
+#MAE: 평균 절대 오차(Mean Absolute Error) / MSE: 평균 제곱 오차(Mean Squared Error)
 
 cv_rf_regressor = RandomForestRegressor()
 
@@ -97,10 +122,15 @@ cv_rf_regressor = RandomForestRegressor()
 #탐색을 시작합니다. cv는 k-fold의 k값입니다.
 grid = GridSearchCV(estimator=cv_rf_regressor, param_grid=params, cv=3)
 grid = GridSearchCV(estimator=cv_rf_regressor, param_grid=params, cv=3, n_jobs=-1) #-1: 사용할 수 있는 모든 job을 사용
-grid = grid.fit(train_data, train_target) #cv=3이므로 24*3=72개의 모델 생성
+grid = grid.fit(train_data, train_target) #cv=3이므로 40*3=120개의 모델 생성
 
 print(f"Best score of paramter search is: {grid.best_score_:.4f}")
 grid.best_params_
+"""
+criterion: mse
+max_depth: 9
+n_estimators: 500
+"""
 
 print("Best parameter of best score is")
 for key, value in grid.best_params_.items():

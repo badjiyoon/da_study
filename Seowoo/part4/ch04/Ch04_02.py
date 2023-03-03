@@ -21,11 +21,11 @@ sorted_data = sorted_data.reset_index(drop=True)
 sorted_data
 ### 2.2 정답이 바뀌는 경계 지점을 찾는다.
 boundary = sorted_data["label"].diff() != 0
-boundary
+print(boundary)
 boundary[0] = False
-boundary
+print(boundary)
 boundary_idx = boundary.loc[boundary].index
-boundary_idx
+print(boundary_idx)
 ### 2.3 경계의 평균값을 기준으로 잡는다.
 # 첫 번째 경계 구간
 idx_1 = boundary_idx[0]
@@ -50,19 +50,25 @@ def concat_gini_index(left, right):
     left_gini *= len(left) / all_num
     right_gini *= len(right) / all_num
     return left_gini + right_gini
+
 # 135를 경계로 나눌 때
 left_1 = sorted_data.loc[:idx_1 - 1, "label"]
 right_1 = sorted_data.loc[idx_1:, "label"]
-left_1
+print(left_1)
 gini_index(right_1)
-concat_gini_index(left_1, right_1)
+print(concat_gini_index(left_1, right_1))
+
 # 345를 경계로 나눌 때
 left_2 = sorted_data.loc[:idx_2 - 1, "label"]
 right_2 = sorted_data.loc[idx_2:, "label"]
-concat_gini_index(left_2, right_2)
+print(concat_gini_index(left_2, right_2))
+
 ## 3. Decision Tree Package
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 tree = DecisionTreeClassifier(max_depth=1)
 tree.fit(data["value"].to_frame(), data["label"])
+plt.figure(0)
 plot_tree(tree)
+plt.show()
+

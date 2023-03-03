@@ -79,7 +79,6 @@ intercept = ovr_logit.intercept_
 def plot_hyperplane(c, color):
     def line(x0):
         return (-(x0 * coef[c, 0]) - intercept[c]) / coef[c, 1]
-
     plt.plot([x_min, x_max], [line(x_min), line(x_max)], ls='--', color=color)
 
 

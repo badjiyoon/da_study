@@ -72,7 +72,7 @@ test_acc = accuracy_score(test_label, test_pred)
 
 print(f"train accuracy is {train_acc:.4f}")
 print(f"test accuracy is {test_acc:.4f}")
-
+print(data)
 # 변수들의 범위가 크기때문에 규모가 큰 것이 영향력도 크다
 # 스케일링 필요
 
@@ -100,7 +100,7 @@ scaling_train_acc = accuracy_score(train_label, scaling_train_pred)
 scaling_test_acc = accuracy_score(test_label, scaling_test_pred)
 
 print(f"Scaled data train accuracy is {scaling_train_acc:.4f}")
-print(f"data test accuracy is {scaling_test_acc:.4f}")
+print(f"Scaled data test accuracy is {scaling_test_acc:.4f}")
 
 print(f"test accuracy is {test_acc:.4f}")
 print(f"Scaled data test accuracy is {scaling_test_acc:.4f}")

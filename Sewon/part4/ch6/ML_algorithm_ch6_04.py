@@ -45,7 +45,6 @@ data.shape
 #1.3.2 column을 제거하는 방법
 na_cnt = data.isna().sum()
 drop_cols = na_cnt.loc[na_cnt > 0].index
-
 drop_cols
 
 data = data.drop(drop_cols, axis=1)

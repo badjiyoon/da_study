@@ -53,7 +53,6 @@ x_min, x_max = data[:, 0].min() - 1, data[:, 0].max() + 1
 y_min, y_max = data[:, 1].min() - 1, data[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
                      np.arange(y_min, y_max, 0.02))
-plt.show()
 
 #2. k 값에 따른 결정 경계
 
@@ -88,7 +87,7 @@ for idx, n in enumerate(range(1, 12, 2)):
     ax.set_xlabel(iris.feature_names[0])
     ax.set_ylabel(iris.feature_names[1])
     ax.set_title(f"{n} Nearest Neighbors")
-    plt.show()
+plt.show()
 
 #3. 가장 가까운 이웃(Nearest Neighbor)
 """
@@ -98,22 +97,29 @@ p=2 : 유클리드 거리
 """
 
 #3.1 Euclidean Distance
-train_data, train_target = data[:-1], target[:-1]
+train_data, train_target = data[:-1], target[:-1] 
+#슬라이싱 -1: 맨 끝 로우에서 하나 자름
 test_data = data[-1:]
 
 len(train_data)
 len(test_data)
 
-euclid_knn = KNeighborsClassifier(n_neighbors=10)
+euclid_knn = KNeighborsClassifier(n_neighbors=10) 
 euclid_knn.fit(train_data, train_target)
 
+#새로운 데이터의 가까운 값들을 배열로 반환
 euclid_knn.kneighbors(
     test_data, n_neighbors=1, return_distance=False
-).ravel()
+).ravel() #ravel(): 불필요한 shape 제거
+"""
+return_distance: 점과 점 사이의 거리 알려줄 것인지
+TRUE: Y, FALSE: N
+"""
 
 euclid_neighbors_idx = euclid_knn.kneighbors(
     test_data, n_neighbors=10, return_distance=False
 ).ravel()
+
 euclid_neighbors = train_data[euclid_neighbors_idx]
 euclid_neighbors_label = train_target[euclid_neighbors_idx]
 
@@ -123,7 +129,7 @@ euclid_neighbors
 euclid_neighbors_label
 
 euclid_knn.predict(test_data)
-euclid_knn.predict_proba(test_data)
+euclid_knn.predict_proba(test_data) #클래스에 속활 확률
 
 plt.figure(figsize=(15, 8))
 plt.scatter(train_data[:, 0], train_data[:, 1], c=train_target, s=500)

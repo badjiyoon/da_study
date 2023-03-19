@@ -7,11 +7,13 @@ np.random.seed(2021)
 # 1. Data
 # 1.1 DataLoad
 from sklearn.datasets import fetch_lfw_people
+
 faces = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
 
 data, target = faces["data"], faces["target"]
 
 # 1.2 Data EDA
+faces
 n_samples, h, w = faces.images.shape
 n_samples, h, w
 print(f'n_samples: {n_samples}')
@@ -24,7 +26,7 @@ print(f'target_names: {target_names}')
 samples = data[:10].reshape(10, h, w)
 fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(20, 10))
 for idx, sample in enumerate(samples):
-    ax = axes[idx//5, idx%5]
+    ax = axes[idx // 5, idx % 5]
     ax.imshow(sample, cmap="gray")
     ax.set_title(target_names[target[idx]])
 plt.show()
@@ -36,10 +38,11 @@ train_data, test_data, train_target, test_target = train_test_split(
     data, target, train_size=0.7, random_state=2021
 )
 
-print(f"train_data size: {len(train_target)}, {len(train_target)/len(data):.2f}")
-print(f"test_data size: {len(test_target)}, {len(test_target)/len(data):.2f}")
+print(f"train_data size: {len(train_target)}, {len(train_target) / len(data):.2f}")
+print(f"test_data size: {len(test_target)}, {len(test_target) / len(data):.2f}")
 # 1.4 Data Scaling
 from sklearn.preprocessing import StandardScaler
+
 scaler = StandardScaler()
 scaler.fit(train_data)
 scaled_train_data = scaler.transform(train_data)
@@ -48,6 +51,7 @@ scaled_test_data = scaler.transform(test_data)
 # 2.SVM
 # 2.1 Baseline
 from sklearn.svm import SVC
+
 svm = SVC()
 svm.fit(scaled_train_data, train_target)
 train_pred = svm.predict(scaled_train_data)
@@ -63,6 +67,7 @@ print(f"test accuracy is {test_acc:.4f}")
 
 # 2.2 Hyper Parameter Tuning
 from sklearn.model_selection import GridSearchCV
+
 # 2.2.1 탐색 범위 설정
 params = [
     {"kernel": ["linear"], "C": [10, 30, 100, 300, 1000, 3000, 10000, 30000]},

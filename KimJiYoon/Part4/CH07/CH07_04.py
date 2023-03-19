@@ -19,7 +19,7 @@ print(f'h: {h}')
 print(f'w: {w}')
 target_names = faces.target_names
 n_classes = target_names.shape[0]
-target_names
+print(f'target_names: {target_names}')
 
 samples = data[:10].reshape(10, h, w)
 fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(20, 10))

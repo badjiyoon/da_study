@@ -13,7 +13,8 @@ china = load_sample_image("china.jpg")
 plt.imshow(china)
 plt.show()
 
-# 1.2 Data Sacling
+# 1.2 Data Scaling
+# 0 ~ 255까지의 RGB 데이터
 china_flatten = china / 255.0
 china_flatten = china_flatten.reshape(-1, 3)
 china_flatten.shape
@@ -44,7 +45,7 @@ from sklearn.cluster import KMeans
 kmeans = KMeans(n_clusters=16)
 kmeans.fit(china_flatten)
 
-# 2.2 새로운 색상
+# 2.2 새로운 색상 -> 16개의 값
 kmeans.cluster_centers_
 
 # 2.3 변환
@@ -58,6 +59,7 @@ china_recolored = new_colors.reshape(china.shape)
 fig, ax = plt.subplots(1, 2, figsize=(16, 6),
                        subplot_kw=dict(xticks=[], yticks=[]))
 # fig.subplots_adjust(wspace=0.05)
+# 16컬러 이미지
 ax[0].imshow(china)
 ax[0].set_title("Original Image", size=16)
 ax[1].imshow(china_recolored)

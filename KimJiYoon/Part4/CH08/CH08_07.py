@@ -9,6 +9,7 @@ np.random.seed(2021)
 # 1. Data
 titanic = pd.read_csv("../../../comFiles/simple_titanic.csv")
 
+# https://www.kaggle.com/competitions/titanic/data
 # 데이터가 갖고 있는 column들은 다음과 같습니다.
 # - Survived : 생존 유무 (정답)
 # - Pclass : 탑승한 여객 클래스
@@ -31,20 +32,24 @@ data["Embarked"].value_counts()
 # 빈 값 확인
 data.isna().sum()
 # 정답의 비율을 확인
+# 0이 생존하지 못한사람, 1이 생존한 사람
 label.value_counts()
 
-# 1.2 Data Preprocess
+# 1.2 Data Preprocess -> 카테고리 변수를 정수로 변환
 data.loc[:, "Sex"] = data["Sex"].map({"male": 0, "female": 1})
 data.loc[:, "Embarked"] = data["Embarked"].map({"S": 0, "C": 1, "Q": 2})
 
-# 1.3 Data Split
+# 1.3 Data Split -> 데이터 분할 6:2:2의 비율
 from sklearn.model_selection import train_test_split
-train_data, validation_data, train_label, validation_label = train_test_split(data, label, train_size=0.6, random_state=2021)
-valid_data, test_data, valid_label, test_label = train_test_split(validation_data, validation_label, train_size=0.5, random_state=2021)
+train_data, validation_data, train_label, validation_label = train_test_split(
+    data, label, train_size=0.6, random_state=2021)
+valid_data, test_data, valid_label, test_label = train_test_split(
+    validation_data, validation_label, train_size=0.5, random_state=2021)
 print(f"train_data size: {len(train_label)}, {len(train_label)/len(data):.2f}")
 print(f"valid_data size: {len(valid_label)}, {len(valid_label)/len(data):.2f}")
 print(f"test_data size: {len(test_label)}, {len(test_label)/len(data):.2f}")
-# 데이터 리셋
+
+# 데이터 리셋 -> 원래 데이터 인덱스 제거
 train_data = train_data.reset_index(drop=True)
 valid_data = valid_data.reset_index(drop=True)
 test_data = test_data.reset_index(drop=True)
@@ -63,6 +68,7 @@ na_cnt.loc[na_cnt > 0].index
 # 2.1 사용하지 않는 방법
 # 데이터가 비어있는 row를 버리기 위해서는 DataFrame의 `dropna` 함수를 사용하면 됩니다.
 # 하지만 이 방법은 Test데이터에 대해서 수행할 경우 비어있는 데이터를 처리할 수 있는 방법이 없어집니다.
+# 단순히 없어지게 하면 안된다.
 drop_data = data.dropna()
 print(f"전체 데이터 개수: {len(data)}")
 print(f"값이 비어있는 데이터를 버린 후 데이터 개수: {len(drop_data)}")
@@ -74,6 +80,7 @@ print(f"버려진 데이터 개수: {len(data) - len(drop_data)}")
 mean_train_data = train_data.copy()
 mean_valid_data = valid_data.copy()
 mean_test_data = test_data.copy()
+
 # 학습 데이터 Age의 평균
 age_mean = mean_train_data["Age"].mean()
 age_mean
@@ -92,18 +99,18 @@ cluster_train_data = train_data.copy()
 cluster_valid_data = valid_data.copy()
 cluster_test_data = test_data.copy()
 
-# clustering 전에 데이터 정규화
+# clustering 전에 데이터 정규화 -> 유사한 데이터로 묶어서 평균 값으로 채움
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
 scaler.fit(cluster_train_data.drop(["Age"], axis=1))
-
+# 빈값은 제거 빈값은 데이터가 어디로 들어왔는지 알수없음.
 train_fill_data = scaler.transform(cluster_train_data.drop(["Age"], axis=1))
 valid_fill_data = scaler.transform(cluster_valid_data.drop(["Age"], axis=1))
 test_fill_data = scaler.transform(cluster_test_data.drop(["Age"], axis=1))
+
 # 최적의 K를 찾기 위해 K값에 따른 SSE 계산
 from sklearn.cluster import KMeans
-
 n_cluster = []
 sse = []
 for n in range(3, 15, 2):
@@ -115,7 +122,7 @@ for n in range(3, 15, 2):
 plt.plot(n_cluster, sse)
 plt.show()
 # SSE 그래프에서 꺽이는 지점인 7로 K를 정함
-n_clusters = 7
+n_clusters = 7 # 명확한 엘보 포인트는 아님 보이는 값 셋팅한거임
 
 kmeans = KMeans(n_clusters=n_clusters)
 kmeans.fit(train_fill_data)
@@ -123,8 +130,10 @@ kmeans.fit(train_fill_data)
 clustered_train = kmeans.predict(train_fill_data)
 clustered_valid = kmeans.predict(valid_fill_data)
 clustered_test = kmeans.predict(test_fill_data)
+# 어떤 군집에 속할지 데이터가 나옴
 clustered_test
 
+# 클러스터에 채울 값 계산
 cluster_fill_value = {}
 for i in range(n_clusters):
     class_mean = cluster_train_data.loc[clustered_train == i, "Age"].dropna().mean()
@@ -134,7 +143,7 @@ cluster_fill_value
 
 # train data에서 빈 값을 채움
 train_na_idx = cluster_train_data.loc[cluster_train_data["Age"].isna()].index
-# 빈 값 데이터
+# 빈 값 데이터 찾기
 train_na_idx
 # 각 index가 속하는 군집은 다음과 같음
 clustered_train[train_na_idx]
@@ -146,6 +155,7 @@ train_fill_value[:10]
 cluster_train_data.loc[train_na_idx, "Age"] = train_fill_value
 # 빈 값이 모두 채워진 것을 확인할 수 있음
 cluster_train_data.loc[train_na_idx]
+# 전체데이터의 헤드 값을 봄
 cluster_train_data.head()
 # Valid, Test 데이터에 대해서도 동일하게 진행합니다.
 # Valid, Test 데이터의 빈 값을 채울 때에는 정규화와 동일하게 Train 데이터에서 구한 값으로 채워줍니다.
@@ -158,7 +168,7 @@ test_fill_value = list(map(lambda x: cluster_fill_value[x], clustered_test[test_
 cluster_valid_data.loc[valid_na_idx, "Age"] = valid_fill_value
 cluster_test_data.loc[test_na_idx, "Age"] = test_fill_value
 
-# Model
+# Model -> 랜덤 포레스트를 사용
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 # Hyper-Parameter Tuning
@@ -174,6 +184,7 @@ for n_estimator in n_estimators:
     mean_valid_pred = mean_random_forest.predict(mean_valid_data)
     mean_accuracy += [accuracy_score(valid_label, mean_valid_pred)]
 
+# 묶어주는 작업
 list(zip(n_estimators, mean_accuracy))
 mean_best_n_estimator = n_estimators[np.argmax(mean_accuracy)]
 print(f"Best n_estimator for mean data is {mean_best_n_estimator}, it's valid accuracy is {max(mean_accuracy):.4f}")

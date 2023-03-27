@@ -24,6 +24,7 @@ n_samples, h, w
 "얼굴의 주인들의 이름을 확인"
 target_names = faces.target_names
 n_classes = target_names.shape[0]
+n_classes
 target_names
 
 "이미지를 실제로 확인"
@@ -33,6 +34,7 @@ for idx, sample in enumerate(samples):
     ax = axes[idx//5, idx%5]
     ax.imshow(sample, cmap="gray")
     ax.set_title(target_names[target[idx]])
+plt.show()
 
 #1.3 Data Split
 from sklearn.model_selection import train_test_split
@@ -56,7 +58,6 @@ scaled_train_data = scaler.transform(train_data)
 scaled_test_data = scaler.transform(test_data)
 
 #2. SVM
-
 #2.1 Baseline
 from sklearn.svm import SVC
 

@@ -22,7 +22,7 @@ Clustering
 -유사한 개체들이 결합되는 dendrogram 생성
 -Cluster들은 sub-cluster를 갖고 있다.
 
-거리의종류
+거리의 종류
 -유클리드 거리
 -맨해튼 거리
 -표준화 거리

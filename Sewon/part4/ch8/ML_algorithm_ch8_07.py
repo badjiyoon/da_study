@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 np.random.seed(2021)
 
 #1. Data
-titanic = pd.read_csv("C:\Users\sewon\Documents\da_study\Sewon\part4\ch8\simple_titanic.csv")
+titanic = pd.read_csv("C:/Users/sewon/Documents/da_study/Sewon/part4/ch8/simple_titanic.csv")
 
 """
 Survived: 생존 유무 (정답)
@@ -100,6 +100,9 @@ mean_train_data.isna().sum() #빈값 없음 확인
 cluster_train_data = train_data.copy()
 cluster_valid_data = valid_data.copy()
 cluster_test_data = test_data.copy()
+cluster_train_data
+cluster_valid_data
+cluster_test_data
 
 #Clustering 전에 정규화
 from sklearn.preprocessing import StandardScaler
@@ -110,6 +113,9 @@ scaler.fit(cluster_train_data.drop(["Age"], axis=1))
 train_fill_data = scaler.transform(cluster_train_data.drop(["Age"], axis=1))
 valid_fill_data = scaler.transform(cluster_valid_data.drop(["Age"], axis=1))
 test_fill_data = scaler.transform(cluster_test_data.drop(["Age"], axis=1))
+train_fill_data
+valid_fill_data
+test_fill_data
 
 #최적의 K를 찾기 위해 K값에 따른 SSE를 계산 후 그리기
 from sklearn.cluster import KMeans
@@ -132,7 +138,8 @@ kmeans.fit(train_fill_data)
 clustered_train = kmeans.predict(train_fill_data)
 clustered_valid = kmeans.predict(valid_fill_data)
 clustered_test = kmeans.predict(test_fill_data)
-
+clustered_train
+clustered_valid 
 clustered_test
 
 cluster_fill_value = {}
@@ -143,7 +150,6 @@ cluster_fill_value
 
 #train data 빈값 채우기
 train_na_idx = cluster_train_data.loc[cluster_train_data["Age"].isna()].index
-
 train_na_idx #빈값을 가진 데이터 확인
 
 clustered_train[train_na_idx]

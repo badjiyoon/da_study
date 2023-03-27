@@ -9,7 +9,7 @@ np.random.seed(2021)
 #1. Data
 
 #1.1 Sample Data
-from sklearn.datasets import make_blobs
+from sklearn.datasets import make_blobs #make_blobs: 무작위 데이터 생성
 
 data, label = make_blobs(n_samples=1500, random_state=170)
 
@@ -90,6 +90,7 @@ size_label = [0] * 500 + [1] * 100 + [2] * 10
 plt.scatter(size_data[:, 0], size_data[:, 1], c=size_label)
 plt.show()
 
+#중심점 찾기
 size_kmeans = KMeans(n_clusters=3, random_state=2021)
 
 size_pred = size_kmeans.fit_predict(size_data)
@@ -109,6 +110,7 @@ density_data, density_label = make_blobs(
 plt.scatter(density_data[:, 0], density_data[:, 1], c=density_label)
 plt.show()
 
+#중심점 찾기
 density_kmeans = KMeans(n_clusters=3, random_state=2021)
 
 density_pred = density_kmeans.fit_predict(density_data)

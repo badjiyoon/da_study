@@ -16,7 +16,10 @@ plt.show()
 
 #1.2 Data Scaling
 china_flatten = china / 255.0
+china_flatten
+china_flatten.shape
 china_flatten = china_flatten.reshape(-1, 3)
+china_flatten
 china_flatten.shape
 
 #1.3 Data EDA
@@ -55,6 +58,14 @@ new_colors = kmeans.cluster_centers_[new_color_label]
 
 plot_pixels(china_flatten, colors=new_colors)
 china_recolored = new_colors.reshape(china.shape)
+
+fig, ax = plt.subplots(1, 2, figsize=(16, 6),
+                       subplot_kw=dict(xticks=[], yticks=[]))
+# fig.subplots_adjust(wspace=0.05)
+ax[0].imshow(china)
+ax[0].set_title("Original Image", size=16)
+ax[1].imshow(china_recolored)
+ax[1].set_title("16-color Image", size=16);
 plt.show()
 
 #3. 더 작은 K

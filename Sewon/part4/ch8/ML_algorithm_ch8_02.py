@@ -1,4 +1,4 @@
-#CH08_02. Non-Hierachical Clustering
+#CH08_02. Non-Hierarchical Clustering
 """
 1. 비계층적 군집화의 정의
 -전체 데이터를 확인하고 특정한 기준으로 데이터를 동시에 구분한다.
@@ -44,7 +44,7 @@ K-Means의 단점
 -서로 다른 밀도의 군집을 잘 못찾음
 -지역적 패턴이 존재하는 군집을 잘 못찾음
 
-3. DBSCAN
+3. DB SCAN
 DB SCAN (Density-Based Spatial Clustering of Applications with Noise)
 -점 P에서부터 거리가 e(epsilon)내에 m(minPts)개 이상 있으면 하나의 군집으로 인식
 
@@ -62,7 +62,7 @@ DB SCAN 모수
 -Cross Validation 등의 방법으로 구해야 한다.
 
 2) Eps
--주어진 minPts에 대한 최적의 거리를 구하는 방법에 대해선 K-dis Graph를 사용한다.
+-주어진 minPts에 대한 최적의 거리를 구하는 방법에 대해선 K-dist Graph를 사용한다.
 
 K-Dist Graph
 -minPts번째 인접한 이웃 데이터 포인트까지의 거리

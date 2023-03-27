@@ -39,15 +39,13 @@ ward: 중심 연결법
 #2.1 학습
 from sklearn.cluster import AgglomerativeClustering
 
-
 single_cluster = AgglomerativeClustering(
     distance_threshold=0, n_clusters=None, linkage="single"
-)
-single_cluster.fit(data)
+) 
+single_cluster.fit(data) 
 
 #2.2 Dendrogram
 from scipy.cluster.hierarchy import dendrogram
-
 
 def plot_dendrogram(model, **kwargs):
     counts = np.zeros(model.children_.shape[0])
@@ -68,7 +66,7 @@ def plot_dendrogram(model, **kwargs):
 
 plt.title('Hierarchical Clustering Dendrogram with single linkage')
 plot_dendrogram(single_cluster, truncate_mode='level', p=3)
-plt.show()
+plt.show() #최단연결법: single cluster
 
 #2.3 여러 개의 클러스터
 

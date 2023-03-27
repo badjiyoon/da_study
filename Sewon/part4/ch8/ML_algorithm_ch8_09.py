@@ -58,6 +58,7 @@ china_recolored = new_colors.reshape(china.shape)
 plt.show()
 
 #3. 더 작은 K
+
 #3.1 학습
 from sklearn.cluster import KMeans
 

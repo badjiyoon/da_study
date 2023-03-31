@@ -15,8 +15,11 @@ plt.show()
 
 # 1.2 Data Scaling
 # 0 ~ 255까지의 RGB 데이터
+china
 china_flatten = china / 255.0
+china_flatten.shape
 china_flatten = china_flatten.reshape(-1, 3)
+china_flatten
 china_flatten.shape
 
 # 1.3 Data EDA

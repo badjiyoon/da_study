@@ -130,7 +130,7 @@ centroid_cluster = AgglomerativeClustering(
     distance_threshold=0, n_clusters=None, linkage="ward"
 )
 centroid_cluster.fit(data)
-plt.title('Hierarchical Clustering Dendrogram with Centorid linkage')
+plt.title('Hierarchical Clustering Dendrogram with Centorid Ward')
 plot_dendrogram(centroid_cluster, truncate_mode='level', p=3)
 plt.show()
 

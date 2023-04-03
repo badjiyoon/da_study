@@ -127,7 +127,7 @@ pattern_pred = pattern_kmeans.fit_predict(pattern_data)
 pattern_center = pattern_kmeans.cluster_centers_
 
 # 대각선으로 되어있는 데이터는 군집에 중심점이 이상해짐
-plt.scatter(data[:, 0], data[:, 1], c=pattern_pred)
+plt.scatter(pattern_data[:, 0], pattern_data[:, 1], c=pattern_pred)
 plt.scatter(pattern_center[:, 0], pattern_center[:, 1], marker="*", s=100, color="red")
 plt.show()
 

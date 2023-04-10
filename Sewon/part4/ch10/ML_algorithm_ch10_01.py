@@ -54,16 +54,16 @@ Gradient Boost 예측
 
 4. XGBoost
 -eXtreme Gradient Boosting
--Gradient Boosting 기반의 모델이다
+-Gradient Boosting 기반의 모델
 -트리를 만들 때 병렬 처리를 가능하게 해서 Gradient Boosting의 속도를 개선
 
 XGBoost의 특징
 1) 병렬 / 분산 처리
--CPU 병렬 처리가 가능하다.
--코어들이 각자 할당받은 변수들로 제각기 가지를 쳐 나간다.
+-CPU 병렬 처리가 가능
+-코어들이 각자 할당받은 변수들로 제각기 가지를 쳐 나감
 2) Split 지점을 고려할 때 일부를 보고 결정
 -연속형 변수들의 Split지점을 고려할 때 일부분만 보고 고려함
 3) Sparsity Awareness
 -Zero 데이터를 건너 뛰면서 학습
--범주형 변수를 dummy화 시킬 경우 학습 속도를 빠르게 할 수 있다!
+-범주형 변수를 dummy화 시킬 경우 학습 속도를 빠르게 할 수 있음
 """

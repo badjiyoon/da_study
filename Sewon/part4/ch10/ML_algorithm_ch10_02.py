@@ -31,6 +31,9 @@ from sklearn.tree import DecisionTreeRegressor
 tree = DecisionTreeRegressor(max_depth=2)
 
 #2.1 학습
+tree.fit(train_data, train_label)
+
+#2.2 예측
 tree_train_pred = tree.predict(train_data)
 tree_test_pred = tree.predict(test_data)
 

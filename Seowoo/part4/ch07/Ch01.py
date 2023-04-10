@@ -8,7 +8,7 @@ np.random.seed(2021)
 from sklearn.datasets import load_iris
 
 iris = load_iris()
-
+iris
 data = iris.data
 target = iris.target
 

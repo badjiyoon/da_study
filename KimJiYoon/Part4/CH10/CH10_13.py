@@ -19,7 +19,7 @@ from sklearn.decomposition import PCA
 
 pca = PCA(n_components=2)
 pca_data = pca.fit_transform(data)
-plt.scatter(pca_data[:,0], pca_data[:,1], c=label)
+plt.scatter(pca_data[:, 0], pca_data[:, 1], c=label)
 plt.show()
 
 # 1.3 Data Split
@@ -45,6 +45,7 @@ models = {
 
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
+
 names = []
 results = []
 for name, model in models.items():
@@ -66,6 +67,7 @@ for name, model in models.items():
 # 3. Stacking
 from sklearn.ensemble import StackingClassifier
 from sklearn.linear_model import LogisticRegression
+
 models.keys()
 stacking = StackingClassifier(
     estimators=list(models.items()),

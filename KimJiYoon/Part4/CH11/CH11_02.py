@@ -20,7 +20,7 @@ from collections import Counter
 
 def ratio_func(y, multiplier, minority_class):
     target_stats = Counter(y)
-    return {minority_class: int(multiplier * target_stats[minority_class])}
+    return { minority_class: int(multiplier * target_stats[minority_class]) }
 
 
 data, label = make_imbalance(
@@ -56,7 +56,6 @@ x_min, x_max = data[:, 0].min() - 1, data[:, 0].max() + 1
 y_min, y_max = data[:, 1].min() - 1, data[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
                      np.arange(y_min, y_max, 0.02))
-plt.show()
 
 # 2. Model
 from sklearn.tree import DecisionTreeClassifier

@@ -33,6 +33,7 @@ plt.scatter(data[:, 0], data[:, 1], c=label)
 plt.show()
 
 # 1.3 Split Data
+# 학습시 정상데이터만 있어야함.
 normal_data, abnormal_data = data[label == 0], data[label == 1]
 normal_label, abnormal_label = label[label == 0], label[label == 1]
 normal_label
@@ -69,8 +70,8 @@ isol_forest = IsolationForest()
 isol_forest.fit(train_data, train_label)
 isol_test_pred = isol_forest.predict(test_data)
 isol_test_pred
+# 1은 정상 -1는 비정상
 isol_forest.decision_function(test_data)
-
 # 2.2 평가
 # 정확도
 from sklearn.metrics import accuracy_score
@@ -88,14 +89,14 @@ print(f"Isolation Forest Test F1-Score is {isol_test_f1:.4f}")
 isol_Z = isol_forest.predict(np.c_[xx.ravel(), yy.ravel()])
 isol_Z = isol_Z.reshape(xx.shape)
 cs = plt.contourf(xx, yy, isol_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
 plt.show()
 
 cs = plt.contourf(xx, yy, isol_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(test_data[:, 0], test_data[:, 1], c=test_label)
 plt.show()
 
-# 3. OCSVM
+# 3. OCSVMß
 # 3.1 학습 & 예측
 from sklearn.svm import OneClassSVM
 
@@ -117,11 +118,11 @@ ocsvm_Z = ocsvm.predict(np.c_[xx.ravel(), yy.ravel()])
 ocsvm_Z = ocsvm_Z.reshape(xx.shape)
 
 cs = plt.contourf(xx, yy, ocsvm_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
 plt.show()
 
 cs = plt.contourf(xx, yy, ocsvm_Z, cmap=plt.cm.Paired)
-plt.scatter(test_data[:,0], test_data[:,1], c=test_label)
+plt.scatter(test_data[:, 0], test_data[:, 1], c=test_label)
 plt.show()
 
 # 4. PCA
@@ -143,7 +144,6 @@ pca_pred[:10]
 
 # 4.2 평가
 from sklearn.metrics import roc_curve, auc
-
 
 fpr, tpr, threshold = roc_curve(test_label, pca_pred)
 pca_auroc = auc(fpr, tpr)
@@ -180,11 +180,11 @@ pca_Z = (Z - Z_recon).mean(1)
 pca_Z = list(map(int, pca_Z > best_thresh))
 pca_Z = np.array(pca_Z).reshape(xx.shape)
 cs = plt.contourf(xx, yy, pca_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
 plt.show()
 
 cs = plt.contourf(xx, yy, pca_Z, cmap=plt.cm.Paired)
-plt.scatter(test_data[:,0], test_data[:,1], c=test_label)
+plt.scatter(test_data[:, 0], test_data[:, 1], c=test_label)
 plt.show()
 
 # 5. 마무리

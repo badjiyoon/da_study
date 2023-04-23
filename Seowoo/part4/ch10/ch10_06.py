@@ -10,6 +10,8 @@ from sklearn.datasets import make_regression
 
 data, label = make_regression(n_samples=1000, n_features=20, n_informative=15, noise=0.1, random_state=1)
 data.shape, label.shape
+
+
 ### 1.2 Data EDA
 from sklearn.decomposition import PCA
 
@@ -23,6 +25,8 @@ from sklearn.model_selection import train_test_split
 train_data, test_data, train_label, test_label = train_test_split(
     data, label, train_size=0.7, random_state=2021
 )
+
+train_data
 
 ## 2. 개별 모델의 성능
 from sklearn.neighbors import KNeighborsRegressor
@@ -45,6 +49,9 @@ for name, model in models.items():
     result = cross_val_score(model, train_data, train_label, cv=3, scoring="neg_mean_absolute_error")
     names += [name]
     results += [result]
+
+names
+results
 
 import sklearn
 

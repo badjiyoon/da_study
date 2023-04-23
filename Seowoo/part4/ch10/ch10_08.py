@@ -2,7 +2,13 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
 
+
+## 3. Stacking
+from sklearn.ensemble import StackingClassifier
+from sklearn.linear_model import LogisticRegression
 np.random.seed(2021)
 ## 1. Data
 ### 1.1 Sample Data
@@ -36,41 +42,11 @@ from sklearn.naive_bayes import GaussianNB
 
 models = {
     'lr': LogisticRegression(),
-    'knn': KNeighborsClassifier(),
-    'tree': DecisionTreeClassifier(),
-    'svm': SVC(),
+    'knn': DecisionTreeClassifier(),
+    'svm': KNeighborsClassifier(),
+    'tree': SVC(),
     'bayes': GaussianNB(),
 }
-
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
-
-names = []
-results = []
-
-for name, model in models.items():
-    result = cross_val_score(model, train_data, train_label, cv=3, scoring="accuracy")
-    names += [name]
-    results += [result]
-
-results
-
-plt.figure(figsize=(8, 8))
-plt.boxplot(results, labels=names)
-plt.show()
-
-for name, model in models.items():
-    model.fit(train_data, train_label)
-    test_pred = model.predict(test_data)
-    acc = accuracy_score(test_label, test_pred)
-    print(f"Model {name} test accuracy is {acc:.4}")
-
-## 3. Stacking
-from sklearn.ensemble import StackingClassifier
-from sklearn.linear_model import LogisticRegression
-
-models.keys()
-
 stacking = StackingClassifier(
     estimators=list(models.items()),
     final_estimator=LogisticRegression(),
@@ -79,19 +55,6 @@ stacking = StackingClassifier(
 
 stacking_result = cross_val_score(stacking, train_data, train_label, cv=3, scoring="accuracy")
 stacking_result
-
-all_result = []
-all_result.extend(results)
-all_result.append(stacking_result)
-
-plt.figure(figsize=(8, 8))
-plt.boxplot(all_result, labels=names + ["stacking"])
-plt.show()
-
-for name, model in models.items():
-    test_pred = model.predict(test_data)
-    acc = accuracy_score(test_label, test_pred)
-    print(f"Model {name} test accuracy is {acc:.4}")
 
 stacking.fit(train_data, train_label)
 stacking_pred = stacking.predict(test_data)

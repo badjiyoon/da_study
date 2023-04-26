@@ -20,7 +20,7 @@ from collections import Counter
 
 def ratio_func(y, multiplier, minority_class):
     target_stats = Counter(y)
-    return { minority_class: int(multiplier * target_stats[minority_class]) }
+    return {minority_class: int(multiplier * target_stats[minority_class])}
 
 
 data, label = make_imbalance(

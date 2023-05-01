@@ -8,8 +8,7 @@ np.random.seed(2021)
 
 #1. Data
 #1.1 Sample Data
-rom sklearn.datasets import make_gaussian_quantiles
-
+from sklearn.datasets import make_gaussian_quantiles
 
 data_1, label_1 = make_gaussian_quantiles(
     cov=2, n_samples=200, n_features=2, n_classes=2, random_state=2021
@@ -39,7 +38,7 @@ xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
 plt.show()
 
 #2. Decision Tree
-rom sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 tree = DecisionTreeClassifier(max_depth=2)
 

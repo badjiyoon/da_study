@@ -103,6 +103,8 @@ cs = plt.contourf(xx, yy, ada_boost_Z, cmap=plt.cm.Paired)
 plt.scatter(test_data[:,0], test_data[:,1], c=test_label)
 plt.title("test_data")
 
+
+
 from sklearn.ensemble import GradientBoostingClassifier
 
 grad_boost = GradientBoostingClassifier(max_depth=1)

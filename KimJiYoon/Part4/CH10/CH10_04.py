@@ -96,17 +96,18 @@ plt.figure(figsize=(14, 7))
 
 plt.subplot(121)
 cs = plt.contourf(xx, yy, ada_boost_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
 plt.title("train_data")
 
 plt.subplot(122)
 cs = plt.contourf(xx, yy, ada_boost_Z, cmap=plt.cm.Paired)
-plt.scatter(test_data[:,0], test_data[:,1], c=test_label)
+plt.scatter(test_data[:, 0], test_data[:, 1], c=test_label)
 plt.title("test_data")
 plt.show()
 
 # 4. GradientBoost
 from sklearn.ensemble import GradientBoostingClassifier
+
 grad_boost = GradientBoostingClassifier(max_depth=1)
 # 4.1 학습
 grad_boost.fit(train_data, train_label)
@@ -129,12 +130,12 @@ plt.figure(figsize=(14, 7))
 
 plt.subplot(121)
 cs = plt.contourf(xx, yy, grad_boost_Z, cmap=plt.cm.Paired)
-plt.scatter(train_data[:,0], train_data[:,1], c=train_label)
+plt.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
 plt.title("train_data")
 
 plt.subplot(122)
 cs = plt.contourf(xx, yy, grad_boost_Z, cmap=plt.cm.Paired)
-plt.scatter(test_data[:,0], test_data[:,1], c=test_label)
+plt.scatter(test_data[:, 0], test_data[:, 1], c=test_label)
 plt.title("test_data")
 plt.show()
 
@@ -151,6 +152,6 @@ Z_name = [
 for idx, (name, Z) in enumerate(Z_name):
     ax = axes[idx]
     ax.contourf(xx, yy, Z, cmap=plt.cm.Paired)
-    ax.scatter(train_data[:,0], train_data[:,1], c=train_label)
+    ax.scatter(train_data[:, 0], train_data[:, 1], c=train_label)
     ax.set_title(name)
 plt.show()

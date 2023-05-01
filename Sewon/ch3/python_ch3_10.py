@@ -25,7 +25,7 @@ df
 
 #레코드 추가
 #문제: a에는 6, b에는 7, c에는 8을 추가하시오.
-df.append({'a':6, 'b':7, 'c':8}, ignore_index=True)
+df.append({'a':6, 'b':7, 'c':8}, ignore_index=True) #index를 무시=index 초기화하고 다시 0부터 시작
 df.append({'a':6, 'b':7, 'c':8}, ignore_index=True, inplace=True) #append는 inplace 안됨
 df=df.append({'a':6, 'b':7, 'c':8}, ignore_index=True)
 df

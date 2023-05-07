@@ -13,6 +13,7 @@ df = pd.read_csv("../../../comFiles/movies_metadata.csv", low_memory=False)
 # 두컬럼만 사용
 df = df[["title", "overview"]]
 # 1000개 데이터만 사용
+len(df)
 df = df.iloc[:1000]
 df.shape
 df
@@ -21,7 +22,7 @@ df
 # 결측치 확인
 df["overview"].isna().sum()
 df["overview"] = df["overview"].fillna('')
-
+df
 # 2. TF-IDF 계산
 # `sklearn.feature_extraction.text`의 `TfidfVectorizer`을 이용해 TF-IDF 결과 값을 계산할 수 있습니다.
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -35,7 +36,7 @@ transformer.get_feature_names_out()[:10]
 pd.DataFrame(tfidf_matrix.toarray(), columns=transformer.get_feature_names_out()).T.head(10)
 
 # 2.2 학습
-transformer = TfidfVectorizer(stop_words='english')
+transformer = TfidfVectorizer(stop_words='은')
 # 2.3 변환
 tfidf_matrix = transformer.fit_transform(df['overview'])
 tfidf_matrix.toarray()

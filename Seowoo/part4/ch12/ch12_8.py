@@ -83,6 +83,7 @@ top_k_similarity
 
 ### 2.3 K명의 유사한 유저들이 아이템 i에 평가한 선호도를 유사도 기준으로 가중 평균한다.
 tok_k_similar_ratings = user_movie_matrix.loc[top_k_similar_user_ids, movie_id]
+tok_k_weighted_ratings = tok_k_similar_ratings * top_k_similarity
 movie_id
 tok_k_similar_ratings
 
@@ -91,7 +92,7 @@ top_k_weight = (tok_k_similar_ratings > 0) * top_k_similarity
 top_k_weight
 
 # 유사도가 곱해진 평가 점수의 합을 유사도 합으로 나눕니다.
-weighted_rating = tok_k_similar_ratings.sum()
+weighted_rating = tok_k_weighted_ratings.sum()
 weight = top_k_weight.sum()
 weight
 

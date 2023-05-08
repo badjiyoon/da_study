@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 
-rootPath = os.getcwd()
+rootPath = os.getcwd() + "/Seowoo/part4/ch12"
 
 
 np.random.seed(2021)
@@ -45,6 +45,7 @@ user_movie_matrix.iloc[-5:, -5:]
 # 유저가 평가하지 않은 영화에 대해서 결측값을 0으로 대체합니다.
 user_movie_matrix = user_movie_matrix.fillna(0)
 user_movie_matrix.shape
+user_movie_matrix
 
 
 ## 2. KNN Basic
@@ -52,6 +53,10 @@ user_movie_matrix.shape
 k = 5
 user_i = 124
 movie_id = 648
+
+user_movie_matrix[movie_id].loc[user_i]
+
+
 ### 2.1 유저 간의 유사도를 계산한다.
 
 # `cosin_similarity` 함수를 이용해 유저별 코사인 유사도를 계산합니다.

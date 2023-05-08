@@ -5,8 +5,7 @@ import numpy as np
 
 import os
 
-rootPath = os.getcwd()
-
+rootPath = os.getcwd() + "/Seowoo/part4/ch12"
 
 np.random.seed(2021)
 ## 1. Data

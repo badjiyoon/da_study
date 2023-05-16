@@ -47,10 +47,7 @@ explainer = LimeTextExplainer(class_names=class_names)
 explain = explainer.explain_instance(text_instance, c.predict_proba)
 list
 explain.as_list()
-html
 explain.show_in_notebook(text=False)
-pyplot
 explain.as_pyplot_figure()
 plt.show()
-notebook
 explain.show_in_notebook(text=True)

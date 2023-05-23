@@ -64,7 +64,7 @@ dtype_data.columns = ["Count", "Columns Type"]
 dtype_data = dtype_data.groupby("Columns Type").aggregate("count").reset_index()
 print(dtype_data)
 
-# 숫자형 데이터 중 명백하게 포함할 의가 없는 것은 없는가?
+# 숫자형 데이터 중 명백하게 포함할 의미가 없는 것은 없는가?
 # 범주형 변수는 있는가?
 # 범주형 변수별 개수 시각화
 # object 각각의 컬럼을 활용
@@ -76,26 +76,90 @@ for col in data.select_dtypes(include=["object", "category"]).columns:
 # 데이터 컬럼별 유일한 개수 확인하기
 # nunique()는 데이터에 고유값들의 수를 출력해주는 함수
 print(data.select_dtypes(include=["object", "category"]).nunique())
+
 # 항목이 2개인 성별과, 흡연 여부는 LabelEncoder 를, 지역은 OneHotEncoder 를 사용 하기로 한다.
 # sklearn 의 LabelEncoder, OneHotEncoder 사용
 
 # LabelEncoder : 각각의 범주를 서로 다른 정수로 맵핑
 # 성별, 흡연 여부 컬럼은 Label Encoding 을 위해 ndarray 로 변환 하여 준다
+sex = data.iloc[:, 1:2].values
+smoker = data.iloc[:, 4:5].values
 
 ### 성별 ###
 # 1. LabelEncoder() 를 선언
+le = LabelEncoder()
 # 2. 성별을 LabelEncoder 의 fit_transform 에 넣어 준다
+sex[:, 0] = le.fit_transform(sex[:, 0])
+print(type(sex[:, 0]))
+sex = pd.DataFrame(sex[:, 0])
+sex.columns = ["sex"]
 # 3. dict 형으로 변환
-
+# zip() 여러 개의 순회 가능한(iterable) 객체를 인자로 받고,
+# 각 객체가 담고 있는 원소를 튜플의 형태로 차례로 접근할 수 있는 반복자(iterator)를 반환
+lex_sex_mapping = dict(zip(le.classes_, le.transform(le.classes_)))
+print("성별에 대한 Label Encoder 결과 : ", lex_sex_mapping)
+print(sex[:10])
 ### 흡연 여부 ###
 # 1. LabelEncoder() 를 선언
+le = LabelEncoder()
 # 2. 흡연 여부를 LabelEncoder 의 fit_transform 에 넣어 준다
+smoker[:, 0] = le.fit_transform(smoker[:, 0])
+print(type(smoker[:, 0]))
+smoker = pd.DataFrame(smoker[:, 0])
+smoker.columns = ["smoker"]
 # 3. dict 형으로 변환
+lex_smoker_mapping = dict(zip(le.classes_, le.transform(le.classes_)))
+print("흡연에 대한 Label Encoder 결과 : ", lex_smoker_mapping)
+print(smoker[:10])
 
 # OneHot Encoder : 각각의 범주를 0과 1로 맵핑
 # 지역 컬럼은 Label Encoding 을 위해 ndarray 로 변환
-
+region = data.iloc[:, 5:6].values
 ### 지역 ###
 # 1. OneHotEncoder() 를 선언해주고
+ohe = OneHotEncoder()
 # 2. 지역을 OneHotEncoder 의 fit_transform 에 넣어준다
+print(ohe.fit_transform(region).toarray())
+region = ohe.fit_transform(region).toarray()
+region = pd.DataFrame(region)
+region.columns = ["northeast", "northwest", "southeast", "southwest"]
+print("지역에 대한 One Hot Encoder 결과 : \n", region[:10])
+
+# 4. 데이터에서 누락된 것이 있는지, 있다면 그것들을 어떻게 처리하려는가?
+# NULL 값이 포함된 컬럼 찾기 -> 각 컬럼의 평균값으로 채우기 (Imputation 또는 보간법)
+# 각 컬럼들에 몇 개의 NULL 값이 포함되어 있는지 확인
+count_nan = data.isnull().sum()
+print(count_nan[count_nan > 0])
+# missingno 패키지를 통해 시각화 확인
+missingno.matrix(data, figsize=(30, 10))
+plt.show()
+# seaborn 패키지 heatmap 을 통해 시각화 확인
+sns.heatmap(data.isnull(), cbar=False, yticklabels=False, cmap="viridis")
+plt.show()
+# NULL 값을 해당 컬럼의 평균값으로 대체하기
+data["bmi"].fillna(data["bmi"].mean(), inplace=True)
+print(data.head(15))
+# 확인
+count_nan = data.isnull().sum()
+print(count_nan[count_nan > 0])
+# missingno 패키지를 통해 시각화 재확인
+missingno.matrix(data, figsize=(30, 10))
+plt.show()
+# * 결측값 처리 참고 사이트 : https://towardsdatascience.com/how-to-handle-missing-data-8646b18db0d4
+### 5. 이상치는 어디에 있는가? 관심을 가져야 할 데이터인가?
+# 숫자형 데이터별 요약 통계값 확인
+print(data.describe().T)
+# 데이터 컬럼별 요약 통계값 보기
+data.age.plot.hist()
+plt.show()
+# 데이터 개별 컬럼 히스토그램으로 확인하기
+import scipy
+scipy.__version__
+# > 숫자형 데이터 Skewness 확인
+# 데이터 컬럼 타입이 np.number 인 것만 가져오기
+# 데이터 컬럼 타입이 np.number 인 컬럼 이름들 가져오기
+# 컬럼별 히스토그램 그리기
+
+# > 숫자형 데이터 Box Plot 시각화
+# 데이터 컬럼 타입이 np.number 인 컬럼들 가져오기
 

@@ -204,7 +204,7 @@ if len(data.select_dtypes(include=['object', 'category']).columns) > 0:
 # Seaborn Heatmap 을 사용한 Correlation 시각화
 # Seaborn Heatmap 을 사용한 Correlation 시각화
 plt.figure(figsize=(6, 4))
-sns.heatmap(data.corr(), cmap='Blues', annot=False)
+sns.heatmap(data.corr(numeric_only=True), cmap='Blues', annot=False)
 plt.show()
 # 판다스 업데이트 후 정수혐만 쓸것인지에 대한 옵션 처리
 k = 4
@@ -236,4 +236,140 @@ X_final = pd.concat([X_num, region, sex, smoker], axis=1)
 y_final = data[["charges"]].copy()
 # train_test_split 을 사용하여 Training, Test 나누기 (Training:Test=2:1)
 X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=0)
+X_train[0:10]
+X_test[0:10]
 
+# Feature Scaling
+# *   다차원의 값들을 비교 분석하기 쉽게 만든다.
+# *   변수들 간의 단위 차이가 있을 경우 필요하다.
+# *   Overflow, Underflow 를 방지해준다.
+## MinMaxScaler 를 사용하는 경우 : 이상치가 있는 경우 변환된 값이 매우 좁은 범위로 압축될 수 있다
+
+# n_scaler = MinMaxScaler()
+# X_train = n_scaler.fit_transform(X_train.astype(np.float))
+# X_test= n_scaler.transform(X_test.astype(np.float))
+
+## StandardScaler 를 사용하는 경우 : 이상치가 있는 경우에는 균형 잡힌 결과를 보장하기 힘들다
+s_scaler = StandardScaler()
+X_train = s_scaler.fit_transform(X_train.astype(np.float64))
+X_test = s_scaler.transform(X_test.astype(np.float64))
+
+## 그 외 - RobustScaler 를 사용하는 경우 : 이상치의 영향을 최소화한 기법. 중앙값과 IQR 을 사용하기 때문에 표준화 후 동일한 값을 더 넓게 분포시키게 된다.
+
+### Regression 절차 요약
+# *   ****Regression()
+# *   fit()
+# *   predict()
+# *   score()
+
+### Linear Regression 적용
+# fit model
+lr = LinearRegression().fit(X_train, y_train)
+
+# predict
+y_train_pred = lr.predict(X_train)
+y_test_pred = lr.predict(X_test)
+
+# Score 확인
+print("lr.coef_: {}".format(lr.coef_))
+print("lr.intercept_: {}".format(lr.intercept_))
+print('lr train score %.3f, lr test score: %.3f' % (lr.score(X_train, y_train), lr.score(X_test, y_test)))
+
+### Polynomial Regression 적용
+poly = PolynomialFeatures(degree=3)
+X_poly = poly.fit_transform(X_final)
+X_train, X_test, y_train, y_test = train_test_split(X_poly, y_final, test_size=0.3, random_state=0)
+
+# Standar Scaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float64))
+X_test = sc.transform(X_test.astype(np.float64))
+# fit model
+
+poly_lr = LinearRegression().fit(X_train, y_train)
+
+# predict
+y_train_pred = poly_lr.predict(X_train)
+y_test_pred = poly_lr.predict(X_test)
+
+# Score 확인
+print('poly train score %.3f, poly test score: %.3f' % (poly_lr.score(X_train, y_train), poly_lr.score(X_test, y_test)))
+
+### Support Vector Regression 적용
+svr = SVR(kernel="linear", C=300)
+
+X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=0)
+
+# Standard Scaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float64))
+X_test = sc.transform(X_test.astype(np.float64))
+
+# fit model
+svr = svr.fit(X_train, y_train.values.ravel())
+y_train_pred = svr.predict(X_train)
+y_test_pred = svr.predict(X_test)
+
+# Score 확인
+print('svr train score %.3f, svr test score: %.3f' % (svr.score(X_train, y_train), svr.score(X_test, y_test)))
+
+### RandomForest Regression 적용
+forest = RandomForestRegressor(n_estimators=100,
+                               criterion='squared_error',
+                               random_state=1,
+                               n_jobs=-1)
+
+X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=0)
+
+# Standard Scaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float64))
+X_test = sc.transform(X_test.astype(np.float64))
+
+# fit model
+forest.fit(X_train, y_train.values.ravel())
+y_train_pred = forest.predict(X_train)
+y_test_pred = forest.predict(X_test)
+# Score 확인
+
+print('forest train score %.3f, forest test score: %.3f' % (
+    forest.score(X_train, y_train),
+    forest.score(X_test, y_test)))
+
+### Decision Tree Regression 적용
+dt = DecisionTreeRegressor(random_state=0)
+
+X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=0)
+
+# Standard Scaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float64))
+X_test = sc.transform(X_test.astype(np.float64))
+
+# fit model
+dt = dt.fit(X_train, y_train.values.ravel())
+y_train_pred = dt.predict(X_train)
+y_test_pred = dt.predict(X_test)
+
+# Score 확인
+print('dt train score %.3f, dt test score: %.3f' % (
+    dt.score(X_train, y_train),
+    dt.score(X_test, y_test)))
+
+### 다양한 모델 성능 종합 비교
+# 앞에서 만든 regressor 변수들과 라벨을 묶어서 하나의 리스트로 모으기
+regressors = [(lr, 'Linear Regression'),
+              (poly_lr, 'Polynomial Regression'),
+              (svr, 'SupportVector Regression'),
+              (forest, 'RandomForest Regression'),
+              (dt, 'DecisionTree')]
+
+# 각 regressor 변수들과 라벨 묶음을 차례로 fit -> predict -> score 로 처리해서 보여주기
+for reg, label in regressors:
+    print(80 * '_', '\n')
+    reg = reg.fit(X_train, y_train.values.ravel())
+    y_train_pred = reg.predict(X_train)
+    y_test_pred = reg.predict(X_test)
+    print(f'{label} train score %.3f, {label} test score: %.3f' % (
+        reg.score(X_train, y_train),
+        reg.score(X_test, y_test)))

@@ -46,7 +46,7 @@ print(data.head(15))
 # 약어나 전문 용어로 되어 있는 것은 없는가?
 # 2. 중복된 항목은 있는가?
 # 중복된 항목 수 알아보기
-print(data.duplicated())# 각 행마다의 중복값 True False 값을 리턴해줌
+print(data.duplicated())  # 각 행마다의 중복값 True False 값을 리턴해줌
 print("중복된 항목 수 : ", len(data[data.duplicated()]))
 # 중복된 항목 확인 (keep 옵션 -> 유지한다) -> 많은 케이스의 경우 정렬
 print(data[data.duplicated(keep=False)].sort_values(by=list(data.columns)).head())
@@ -147,19 +147,93 @@ missingno.matrix(data, figsize=(30, 10))
 plt.show()
 # * 결측값 처리 참고 사이트 : https://towardsdatascience.com/how-to-handle-missing-data-8646b18db0d4
 ### 5. 이상치는 어디에 있는가? 관심을 가져야 할 데이터인가?
-# 숫자형 데이터별 요약 통계값 확인
+# 숫자형 데이터별 요약 통계값 확인 (간단한 통계값 T의 경우 trans)
 print(data.describe().T)
-# 데이터 컬럼별 요약 통계값 보기
+# 데이터 컬럼별 요약 통계값 보기 (기본적인 그래프 -> )
 data.age.plot.hist()
 plt.show()
 # 데이터 개별 컬럼 히스토그램으로 확인하기
 import scipy
-scipy.__version__
-# > 숫자형 데이터 Skewness 확인
-# 데이터 컬럼 타입이 np.number 인 것만 가져오기
-# 데이터 컬럼 타입이 np.number 인 컬럼 이름들 가져오기
-# 컬럼별 히스토그램 그리기
 
+scipy.__version__
+# > 숫자형 데이터 Skewness 확인 (외도)
+# 데이터 컬럼 타입이 np.number 인 것만 가져오기 (숫자형)
+numeric_data = data.select_dtypes(include=np.number)
+# 데이터 컬럼 타입이 np.number 인 컬럼 이름들 가져오기
+l = numeric_data.columns.values
+number_of_columns = 4
+number_of_rows = len(l) - 1 / number_of_columns
+print(number_of_rows)
+# 컬럼별 히스토그램 그리기 (kde => 경향)
+for i in range(0, len(l)):
+    sns.displot(numeric_data[l[i]], kde=True)
+    plt.show()
 # > 숫자형 데이터 Box Plot 시각화
 # 데이터 컬럼 타입이 np.number 인 컬럼들 가져오기
+columns = data.select_dtypes(include=np.number).columns
+figure = plt.figure(figsize=(20, 10))
+figure.add_subplot(1, len(columns), 1)
+for index, col in enumerate(columns):
+    if index > 0:
+        figure.add_subplot(1, len(columns), index + 1)
+    sns.boxplot(y=col, data=data, boxprops={"facecolor": "None"})
+figure.tight_layout()  # 자동으로 명시된 여백에 관련된 서브플롯 파라미터를 조정
+plt.show()
+
+plt.figure(figsize=(20, 20))
+for i in range(0, len(l)):
+    print('number_of_rows ', number_of_rows)
+    # 안됨
+    # plt.subplot(number_of_rows + 1, number_of_columns, i + 1)
+    plt.subplot(1, number_of_columns, i + 1)
+    sns.set_style('whitegrid')
+    sns.boxplot(numeric_data[l[i]], color='green', orient='v')
+    plt.tight_layout()
+plt.show()
+
+# > 범주형 데이터별 Violin Plot 시각화
+if len(data.select_dtypes(include=['object', 'category']).columns) > 0:
+    for col_num in data.select_dtypes(include=np.number).columns:
+        for col in data.select_dtypes(include=['object', 'category']).columns:
+            fig = sns.catplot(x=col, y=col_num, kind='violin', data=data, height=5, aspect=2)
+            fig.set_xticklabels(rotation=90)
+            plt.show()
+
+### 6. 변수 간 상관성이 있는가?
+# > 숫자형 데이터 간 Pairwise 결합 분포 시각화
+# Seaborn Heatmap 을 사용한 Correlation 시각화
+# Seaborn Heatmap 을 사용한 Correlation 시각화
+plt.figure(figsize=(6, 4))
+sns.heatmap(data.corr(), cmap='Blues', annot=False)
+plt.show()
+# 판다스 업데이트 후 정수혐만 쓸것인지에 대한 옵션 처리
+k = 4
+cols = data.corr(numeric_only=True).nlargest(k, "charges")["charges"].index
+cm = data[cols].corr(numeric_only=True)
+plt.figure(figsize=(10, 6))
+sns.heatmap(cm, cmap="viridis", annot=True)
+plt.show()
+# 숫자 변수형 컬럼들 간 Pairplot 그리기 -> 선형인지 확인하는 것
+sns.pairplot(data.select_dtypes(include=np.number))
+plt.show()
+
+# > 범주형 데이터를 기준으로 추가한 시각화
+# https://seaborn.pydata.org/examples/index.html
+hue = 'smoker'
+sns.pairplot(data.select_dtypes(include=np.number).join(data[[hue]]), hue=hue)
+plt.show()
+
+## 03. 다양한 Regression 을 활용한 보험료 예측
+# https://scikit-learn.org/stable/
+
+### Training, Test 데이터 나누기
+
+# 숫자형 데이터들만 copy() 를 사용하여 복사
+X_num = data[["age", "bmi", "children"]].copy()
+# 변환했던 범주형 데이터들과 concat 을 사용하여 합치기
+X_final = pd.concat([X_num, region, sex, smoker], axis=1)
+# 보험료 컬럼(charges)을 y 값으로 설정
+y_final = data[["charges"]].copy()
+# train_test_split 을 사용하여 Training, Test 나누기 (Training:Test=2:1)
+X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=0)
 

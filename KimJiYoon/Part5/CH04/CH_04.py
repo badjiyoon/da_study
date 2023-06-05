@@ -321,3 +321,13 @@ ax = sns.distplot(bad, bins=bins, label='Bad loans', kde=False, norm_hist=True)
 ax.set_ylabel('Density')
 ax.legend()
 plt.show()
+
+good = X_mod.loc[y_mod == 1, 'revol_util']
+bad = X_mod.loc[y_mod == 0, 'revol_util']
+
+bins = 20
+sns.distplot(good, bins=bins, label='Good loans', kde=False, norm_hist=True)
+ax = sns.distplot(bad, bins=bins, label='Bad loans', kde=False, norm_hist=True)
+ax.set_ylabel('Density')
+ax.legend()
+plt.show()

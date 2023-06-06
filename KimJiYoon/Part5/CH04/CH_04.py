@@ -11,6 +11,7 @@
 # fm._rebuild()
 
 from matplotlib import pyplot as plt
+
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.family'] = 'AppleGothic'
 
@@ -184,10 +185,10 @@ X[num_feat].nunique().sort_values()
 X = X.drop(['num_tl_120dpd_2m', 'id'], axis=1, errors='ignore')
 
 #### 2) 숫자형 데이터 상관도에 따른 컬럼 제거
-  # * 숫자형 컬럼들 간 Pearson R 상관 계수를 구한다
-  # * 상관 계수가 0.9 이상인 컬럼들 중 가장 큰 컬럼을 제거해 본다
-  # * 컬럼들 간 조합 생성 : comb_num_feat = np.array(list(combinations(num_feat, 2)))
-  # * Pearson R 상관 계수 구하기 : pearsonr(x1, x2)[0]
+# * 숫자형 컬럼들 간 Pearson R 상관 계수를 구한다
+# * 상관 계수가 0.9 이상인 컬럼들 중 가장 큰 컬럼을 제거해 본다
+# * 컬럼들 간 조합 생성 : comb_num_feat = np.array(list(combinations(num_feat, 2)))
+# * Pearson R 상관 계수 구하기 : pearsonr(x1, x2)[0]
 num_feat = X.select_dtypes('number').columns.values
 comb_num_feat = np.array(list(combinations(num_feat, 2)))
 corr_num_feat = np.array([])
@@ -203,22 +204,22 @@ high_corr_num
 X = X.drop(np.unique(high_corr_num[:, 0]), axis=1, errors='ignore')
 
 #### 3) 범주형 데이터의 유일한 값 개수 확인
-  # * pandas 의 select_dtypes('object') 사용
-  # * pandas 의 nunique().sort_values() 사용
-  # * 유일한 값이 1개인 경우/모든 행의 값이 다른 경우 둘 다 제거한다
-  # * 범주형 데이터의 경우 Encoding 시 메모리 오류를 방지하기 위해 유일한 값이 많은 경우는 제거하는 것이 좋다
+# * pandas 의 select_dtypes('object') 사용
+# * pandas 의 nunique().sort_values() 사용
+# * 유일한 값이 1개인 경우/모든 행의 값이 다른 경우 둘 다 제거한다
+# * 범주형 데이터의 경우 Encoding 시 메모리 오류를 방지하기 위해 유일한 값이 많은 경우는 제거하는 것이 좋다
 
 cat_feat = X.select_dtypes('object').columns.values
 X[cat_feat].nunique().sort_values()
 
 X = X.drop(['url', 'emp_title'], axis=1, errors='ignore')
 #### 4) 범주형 데이터 상관도에 따른 컬럼 제거
-  # * 범주형 컬럼들 간 카이제곱 통계량을 사용하는 Crammer 의 V 상관 계수를 구한다
-  # * Crammer 의 V 상관계수 식 구하는 방법
-  # table = pd.pivot_table(X, values='loan_amnt', index=comb[0], columns=comb[1], aggfunc='count').fillna(0)
-  # corr = np.sqrt(chi2_contingency(table)[0] / (table.values.sum() * (np.min(table.shape) - 1) ) )
-  # * 상관 계수가 0.9 이상인 컬럼들 중 머신러닝 모델 생성 시 예측 변수의 조건으로 활용할 grade 를 제외한 후 가장 높은 컬럼을 제거한다.
-  # * 컬럼들 간 조합 생성 : comb_cat_feat = np.array(list(combinations(cat_feat, 2)))
+# * 범주형 컬럼들 간 카이제곱 통계량을 사용하는 Crammer 의 V 상관 계수를 구한다
+# * Crammer 의 V 상관계수 식 구하는 방법
+# table = pd.pivot_table(X, values='loan_amnt', index=comb[0], columns=comb[1], aggfunc='count').fillna(0)
+# corr = np.sqrt(chi2_contingency(table)[0] / (table.values.sum() * (np.min(table.shape) - 1) ) )
+# * 상관 계수가 0.9 이상인 컬럼들 중 머신러닝 모델 생성 시 예측 변수의 조건으로 활용할 grade 를 제외한 후 가장 높은 컬럼을 제거한다.
+# * 컬럼들 간 조합 생성 : comb_cat_feat = np.array(list(combinations(cat_feat, 2)))
 
 cat_feat = X.select_dtypes('object').columns.values
 comb_cat_feat = np.array(list(combinations(cat_feat, 2)))
@@ -234,9 +235,9 @@ X = X.drop(np.unique(high_corr_cat[:, 1]), axis=1, errors='ignore')
 ### 5. 예측 변수 Feature 생성
 
 #### 대출 상태를 보여주는 'loan_status' 를 예측 변수 Feature 로 한다
-  # * loan_status 의 항목별 개수를 확인한다
-  # * 건전한 상태를 나타내는 'Current, Fully Paid, In Grace Period' 를 1 로 나타낸다.
-  # * 그 외는 부실한 상태를 나타내는 0 으로 나타낸다.
+# * loan_status 의 항목별 개수를 확인한다
+# * 건전한 상태를 나타내는 'Current, Fully Paid, In Grace Period' 를 1 로 나타낸다.
+# * 그 외는 부실한 상태를 나타내는 0 으로 나타낸다.
 
 data['loan_status'].value_counts()
 y = data['loan_status'].copy()
@@ -244,8 +245,8 @@ y = y.isin(['Current', 'Fully Paid', 'In Grace Period']).astype('int')
 y.value_counts()
 # 03. 모델링
 #### 1) 분석 목표는 '고위험/고금리 대출 중 양호한 대출을 예측하는 것'
-  # * 위험도를 나타내는 grade 컬럼에서 가장 위험한 상태인 'E' 에 해당하는 데이터만 가져온다.
-  # * 위험도에 따라 설정되는 int_rate 컬럼은 제거한다.
+# * 위험도를 나타내는 grade 컬럼에서 가장 위험한 상태인 'E' 에 해당하는 데이터만 가져온다.
+# * 위험도에 따라 설정되는 int_rate 컬럼은 제거한다.
 
 X_mod = X[X.grade == 'E'].copy()
 X_mod = X_mod.drop(['grade', 'int_rate'], axis=1, errors='ignore')
@@ -256,10 +257,10 @@ y_mod = y[X_mod.index]
 X_train, X_test, y_train, y_test = train_test_split(X_mod, y_mod, stratify=y_mod, random_state=0)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, stratify=y_train, random_state=0)
 #### 2) 머신러닝 기법은 'CatBoost' 를 사용한다.
-  # * CatBoost 는 범주가 많은 범주형 Feature 를 포함하는 데이터셋에 매우 효율적이다.
-  # * CatBoost 는 범주형 데이터를 숫자형으로 변환하게 되고, 기본 설정으로 Mean Encoding 을 사용하는데 단순하게 평균을 사용하게 되면 Data Leakage 문제(우리가 예측해야 하는 값이 훈련 데이터의 Feature 에 들어가는 문제) 가 나타나게 되는데 이전 데이터들의 평균을 활용하는 방법을 사용하여 이를 해결해 준다
-  # * Pool 을 사용하여 학습 데이터를 CatBoost 에 맞게 변환해 준다
-  # * CatBoost 는 Ordered Boosting 과 Random Permutation 등의 Overfitting 을 방지하기 위한 내장 알고리즘이 있어서, 비교적 다른 Gradient Boosting 방법들에 비해 Hyper Parameter Tuning 에 자유로운 알고리즘
+# * CatBoost 는 범주가 많은 범주형 Feature 를 포함하는 데이터셋에 매우 효율적이다.
+# * CatBoost 는 범주형 데이터를 숫자형으로 변환하게 되고, 기본 설정으로 Mean Encoding 을 사용하는데 단순하게 평균을 사용하게 되면 Data Leakage 문제(우리가 예측해야 하는 값이 훈련 데이터의 Feature 에 들어가는 문제) 가 나타나게 되는데 이전 데이터들의 평균을 활용하는 방법을 사용하여 이를 해결해 준다
+# * Pool 을 사용하여 학습 데이터를 CatBoost 에 맞게 변환해 준다
+# * CatBoost 는 Ordered Boosting 과 Random Permutation 등의 Overfitting 을 방지하기 위한 내장 알고리즘이 있어서, 비교적 다른 Gradient Boosting 방법들에 비해 Hyper Parameter Tuning 에 자유로운 알고리즘
 
 cat_feat_ind = (X_train.dtypes == 'object').to_numpy().nonzero()[0]
 pool_train = Pool(X_train, y_train, cat_features=cat_feat_ind)
@@ -273,10 +274,10 @@ model = CatBoostClassifier(learning_rate=0.03,
 model.fit(pool_train, eval_set=pool_val, plot=True)
 
 #### 3) 모델의 성능
-  # * Accuracy, Precision, Recall 을 사용한다
-  # * Accuracy(정확도) : (실제 데이터가 예측 데이터인 수) / (전체 데이터 수) → 모델이 얼마나 정확하게 분류하는가?
-  # * Precision(정밀도) : (A라고 예측한 데이터가 실제 A인 데이터 수) / (A라고 예측한 데이터 수) → 모델이 찾은 A는 얼마나 정확한가? "일반 메일을 스팸 메일로 분류해서는 안된다"
-  # * Recall(재현율) : (A라고 예측한 데이터 수) / (실제 A인 데이터 수) → 모델이 얼마나 정확하게 A를 찾는가? "실제 암환자인 경우 반드시 양성으로 판단해야 한다"
+# * Accuracy, Precision, Recall 을 사용한다
+# * Accuracy(정확도) : (실제 데이터가 예측 데이터인 수) / (전체 데이터 수) → 모델이 얼마나 정확하게 분류하는가?
+# * Precision(정밀도) : (A라고 예측한 데이터가 실제 A인 데이터 수) / (A라고 예측한 데이터 수) → 모델이 찾은 A는 얼마나 정확한가? "일반 메일을 스팸 메일로 분류해서는 안된다"
+# * Recall(재현율) : (A라고 예측한 데이터 수) / (실제 A인 데이터 수) → 모델이 얼마나 정확하게 A를 찾는가? "실제 암환자인 경우 반드시 양성으로 판단해야 한다"
 
 y_pred_test = model.predict(pool_test)
 

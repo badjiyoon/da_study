@@ -2,19 +2,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
-# Import and suppress warnings
-import warnings
-
-# Settings Warning and Plot Hangul
-warnings.filterwarnings('ignore')
-plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['font.family'] = 'AppleGothic'
 # 00. 필요한 파이썬 라이브러리 불러오기
 # Plotly
 import plotly.offline as py
-
-py.init_notebook_mode(connected=True)
 import plotly.graph_objs as go
 import plotly.tools as tls
 
@@ -36,11 +26,11 @@ import scipy.cluster.hierarchy as shc
 
 from scipy.stats import pearsonr, chi2_contingency
 from itertools import combinations
-
 # Import and suppress warnings
 import warnings
 
 # Settings Warning and Plot Hangul
+py.init_notebook_mode(connected=True)
 warnings.filterwarnings('ignore')
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.family'] = 'AppleGothic'

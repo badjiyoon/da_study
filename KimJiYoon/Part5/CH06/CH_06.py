@@ -53,8 +53,7 @@ train.info()
 train.describe()
 # 3) 변수 간 관계 그래프
 # 여러 개의 KDE Plot 생성 준비
-f, axes = plt.subplots(2, 2, figsize=(10, 8),
-                       sharex=False, sharey=False)
+f, axes = plt.subplots(2, 2, figsize=(10, 8), sharex=False, sharey=False)
 
 # Plot 색상 설정
 s = np.linspace(0, 3, 10)

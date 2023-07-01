@@ -237,11 +237,13 @@ train_num.nunique().sort_values()
 # 방법 1
 num_feat = train_num.columns.values
 comb_num_feat = np.array(list(combinations(num_feat, 2)))
+comb_num_feat
 corr_num_feat = np.array([])
 for comb in comb_num_feat:
     corr = pearsonr(train_num[comb[0]], train_num[comb[1]])[0]
     corr_num_feat = np.append(corr_num_feat, corr)
 
+# 상관성 있는게 거의 없다.
 high_corr_num = comb_num_feat[np.abs(corr_num_feat) >= 0.9]
 high_corr_num
 
@@ -330,7 +332,7 @@ print("Accuracy score: {}".format(accuracy_score(y_test, lr_predictions)))
 print("=" * 60)
 print(classification_report(y_test, lr_predictions))
 
-# RFE(Recursive Feature Elimination) 적용
+# RFE(Recursive Feature Elimination) 적용 -> 하나씩 제거하면서 원하는 Feature를 얻는 방법
 # Backward
 rfe = RFE(estimator=model, n_features_to_select=6)
 X_rfe = rfe.fit_transform(X, Y)
@@ -340,7 +342,7 @@ print(rfe.support_)
 print(rfe.ranking_)
 print(X.columns[rfe.support_])
 
-# SelectKBest 적용
+# SelectKBest 적용 -> 독립변수1, 카이제곱 통계랑 기준으로 베스트 뽑는 기준
 # Univariate Selection
 X_new = SelectKBest(chi2, k=6).fit_transform(X, Y)
 X_new_train, X_new_test, y_new_train, y_new_test = train_test_split(X_new, Y, test_size=0.30)
@@ -522,6 +524,7 @@ result.head()
 
 # 주성분-클러스터 그래프
 facet = sns.lmplot(data=result, x='P1', y='P2', hue='Cluster', fit_reg=False, legend=True, legend_out=True)
+plt.show()
 result['Cluster'].value_counts()
 
 # PCA 후 Elbow 방법 적용

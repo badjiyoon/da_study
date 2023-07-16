@@ -38,8 +38,8 @@ plt.rcParams['font.family'] = 'AppleGothic'
 data = pd.read_csv('../../../comFiles/uci-secom.csv')
 data.head()
 data.shape
-
 # 1. 데이터 탐색
+
 # 1) 데이터 타입
 # 컬럼 별 데이터 타입 알아보기
 data.info()
@@ -109,6 +109,8 @@ plt.title('4번 센서 계측값', fontsize=20)
 # plt.legend()
 fig.legend(labels=['Pass', 'Fail'])
 plt.show()
+# 데이터 불균형을 해결할 필요가 있다.
+# 센서의 분포도를 확인하고 넘어간다.
 
 # 4. 상관성에 따른 Feature 정제
 # 1) 히트맵 확인
@@ -431,7 +433,7 @@ plt.show()
 
 # 5) PCA 를 활용한 차원 축소
 data.shape
-# 1. Scailing using zscore
+# 1. Scailing using zscore # 정규화를 한다.
 from scipy.stats import zscore
 
 data_new = data.iloc[:, :306].apply(zscore)
@@ -446,7 +448,7 @@ print("shape of x:", x.shape)
 print("shape of y:", y.shape)
 
 # 2. PCA Step 1 - Covariance Matrix 만들기
-cov_matrix = np.cov(x.T)
+cov_matrix = np.cov(x.T) # 공분산 행렬 만들기
 print('Covariance Matrix \n%s', cov_matrix)
 
 # 3. PCA Step 2 - Eigen Values 와 Eigen Vector 만들기
@@ -456,7 +458,7 @@ print('\n Eigen Values \n%s', eig_vals)
 
 tot = sum(eig_vals)
 var_exp = [(i / tot) * 100 for i in sorted(eig_vals, reverse=True)]
-cum_var_exp = np.cumsum(var_exp)
+cum_var_exp = np.cumsum(var_exp) # 설명력을 의미한다.
 print("누적 분산 설명력", cum_var_exp)
 plt.plot(var_exp)
 plt.show()
@@ -711,3 +713,4 @@ layout = go.Layout(
 )
 fig = go.Figure(data=data, layout=layout)
 py.iplot(fig, filename='scatter')
+plt.show()

@@ -332,6 +332,13 @@ sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 
+y_train
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+y_train = le.fit_transform(y_train)
+y_train
+
 """#### 2. XGBoost (Scaled 데이터)"""
 
 xg = XGBClassifier(random_state=1)
@@ -342,14 +349,21 @@ y_train = le.fit_transform(y_train)
 xg.fit(x_train, y_train)
 y_pred = xg.predict(x_test)
 
+import sklearn
+sklearn.__version__
+
+y_pred
+
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test, y_pred)
+le.inverse_transform(y_pred)
+
+cm = confusion_matrix(y_test, le.inverse_transform(y_pred))
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", xg.score(x_test,y_test)*100)
+print("Accuracy: ", xg.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 3. RandomForest (Scaled 데이터)"""
 
@@ -359,12 +373,12 @@ y_pred = rf.predict(x_test)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(y_test, le.inverse_transform(y_pred))
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", rf.score(x_test,y_test)*100)
+print("Accuracy: ", rf.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 4. Logistic Regression (Scaled 데이터)"""
 
@@ -374,12 +388,12 @@ y_pred = lr.predict(x_test)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(y_test, le.inverse_transform(y_pred))
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", lr.score(x_test,y_test)*100)
+print("Accuracy: ", lr.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 5. Lasso (Scaled 데이터)"""
 
@@ -390,7 +404,7 @@ y_pred = lasso.predict(x_test)
 # 예측값의 부호를 classifier 로 변환
 y_pred2 = np.sign(y_pred)
 
-print("Accuracy: ", lasso.score(x_test,y_test)*100)
+print("Accuracy: ", lasso.score(x_test, le.fit_transform(y_test))*100)
 
 """> Confusion Matrix"""
 
@@ -411,13 +425,13 @@ y_pred = model.predict(x_test_us)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", model.score(x_test,y_test)*100)
+print("Accuracy: ", model.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 2. Grid Search - XGBoost (Undersampled 데이터)"""
 
@@ -441,11 +455,11 @@ model = XGBClassifier(max_depth = 3, scale_pos_weights = weights, n_jobs = 4,ran
 model.fit(x_train_us, y_train_us)
 y_pred = model.predict(x_test_us)
 
-print("Accuracy: ", model.score(x_test,y_test)*100)
+print("Accuracy: ", model.score(x_test,le.fit_transform(y_test))*100)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
@@ -459,13 +473,13 @@ y_pred = model.predict(x_test_us)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", model.score(x_test,y_test)*100)
+print("Accuracy: ", model.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 3. Logistic Regression (Undersampled 데이터)"""
 
@@ -476,13 +490,13 @@ y_pred = lr.predict(x_test_us)
 
 """**Confusion matrix for Logistic Regression (Undersampled)**"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", lr.score(x_test,y_test)*100)
+print("Accuracy: ", lr.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 4. Lasso (Undersampled 데이터)"""
 
@@ -506,7 +520,7 @@ plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", lasso.score(x_test_us,y_test_us)*100)
+print("Accuracy: ", lasso.score(x_test_us,le.fit_transform(y_test_us))*100)
 
 """### 4) 오버샘플링 데이터 대상 재모델링
 
@@ -546,13 +560,13 @@ y_pred = model.predict(x_test_os)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_os, y_pred)
+cm = confusion_matrix(y_test_os, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15}, cmap = 'spring')
 
-print("Accuracy: ", model.score(x_test,y_test)*100)
+print("Accuracy: ", model.score(x_test,le.fit_transform(y_test))*100)
 
 """#### 2. Random Forest (Oversampled 데이터)"""
 
@@ -564,7 +578,7 @@ print("Accuracy: ", model.score(x_test_os,y_test_os)*100)
 """> Confusion Matrix"""
 
 # printing the confusion matrix
-cm = confusion_matrix(y_test_os, y_pred)
+cm = confusion_matrix(y_test_os, le.inverse_transform(y_pred))
 sns.heatmap(cm, annot = True, cmap = 'rainbow')
 
 """#### 3. Logistic Regression (Oversampled 데이터)"""
@@ -573,11 +587,11 @@ lr = LogisticRegression(random_state=1)
 lr.fit(x_train_os, y_train_os)
 y_pred = lr.predict(x_test_os)
 
-print("Accuracy: ", lr.score(x_test_os,y_test_os)*100)
+print("Accuracy: ", lr.score(x_test_os,le.fit_transform(y_test_os))*100)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_os, y_pred)
+cm = confusion_matrix(y_test_os, le.inverse_transform(y_pred))
 sns.heatmap(cm, annot = True, cmap = 'rainbow')
 
 """### 5) PCA 를 활용한 차원 축소"""
@@ -767,13 +781,13 @@ y_pred = model.predict(x_test_us)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
 sns.heatmap(cm, annot = True, annot_kws = {"size": 15})
 
-print("Accuracy: ", model.score(x_test_us,y_test_us)*100)
+print("Accuracy: ", model.score(x_test_us,le.fit_transform(y_test_us))*100)
 
 """#### 2. Grid Search - XGBoost - PCA (Undersampled 데이터)"""
 
@@ -800,7 +814,7 @@ print("Accuracy: ", model.score(x_test_us,y_test_us)*100)
 
 """> Confusion Matrix"""
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style = 'dark', font_scale = 1.4)
@@ -812,10 +826,10 @@ model = RandomForestClassifier(n_estimators=100, random_state=1,verbose=0 )
 model.fit(x_train_us, y_train_us)
 y_pred = model.predict(x_test_us)
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 sns.heatmap(cm, annot = True, cmap = 'rainbow')
 
-print("Accuracy: ", model.score(x_test_us,y_test_us)*100)
+print("Accuracy: ", model.score(x_test_us,le.fit_transform(y_test_us))*100)
 
 """#### 3. Logistic Regression - PCA (Undersampled 데이터)"""
 
@@ -823,7 +837,7 @@ lr = LogisticRegression(random_state=1)
 lr.fit(x_train_us, y_train_us)
 y_pred = lr.predict(x_test_us)
 
-cm = confusion_matrix(y_test_us, y_pred)
+cm = confusion_matrix(y_test_us, le.inverse_transform(y_pred))
 sns.heatmap(cm, annot = True, cmap = 'rainbow')
 
 print("Accuracy: ", lr.score(x_test_us,y_test_us)*100)
@@ -841,7 +855,7 @@ actual_cost = list(y_test_us)
 actual_cost = np.asarray(actual_cost)
 y_pred_lass = lasso.predict(x_test_us)
 
-print("Accuracy: ", lasso.score(x_test_us, y_test_us)*100)
+print("Accuracy: ", lasso.score(x_test_us, le.fit_transform(y_test_us))*100)
 
 """> Confusion Matrix"""
 

@@ -114,8 +114,9 @@ plt.show()
 
 # 4. 상관성에 따른 Feature 정제
 # 1) 히트맵 확인
+data.corr(numeric_only=True)
 plt.rcParams['figure.figsize'] = (18, 18)
-sns.heatmap(data.corr(), cmap="YlGnBu")
+sns.heatmap(data.corr(numeric_only=True), cmap="YlGnBu")
 plt.title('상관 히트맵', fontsize=20)
 plt.show()
 
@@ -123,12 +124,12 @@ plt.show()
 # 상관계수 필터링 함수
 # > 입력한 상관계수 threshold 에 따라 Feature 들 필터링하는 함수 정의
 # 상관계수 구하기
-data.corr()
+data.corr(numeric_only=True)
 
 
 def remove_collinear_features(x, threshold):
     # 데이터프레임 x 의 상관계수 구하기
-    corr_matrix = x.corr()
+    corr_matrix = x.corr(numeric_only=True)
     # Pass / Fail 을 제외한 컬럼수
     iters = range(len(corr_matrix.columns) - 1)
     # 제거할 컬럼들 저장할 리스트
@@ -248,10 +249,14 @@ sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+y_train = le.fit_transform(y_train)
 # 2. XGBoost (Scaled 데이터)
 xg = XGBClassifier(random_state=1)
 xg.fit(x_train, y_train)
 y_pred = xg.predict(x_test)
+y_pred = le.inverse_transform(y_pred)
 # Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 plt.rcParams['figure.figsize'] = (5, 5)
@@ -265,6 +270,7 @@ rf = RandomForestClassifier(n_estimators=100, random_state=1, verbose=0)
 rf.fit(x_train, y_train)
 y_pred = rf.predict(x_test)
 # Confusion Matrix
+y_pred = le.inverse_transform(y_pred)
 cm = confusion_matrix(y_test, y_pred)
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style='dark', font_scale=1.4)
@@ -277,6 +283,7 @@ lr = LogisticRegression(random_state=1)
 lr.fit(x_train, y_train)
 y_pred = lr.predict(x_test)
 # Confusion Matrix
+y_pred = le.inverse_transform(y_pred)
 cm = confusion_matrix(y_test, y_pred)
 plt.rcParams['figure.figsize'] = (5, 5)
 sns.set(style='dark', font_scale=1.4)

@@ -149,7 +149,6 @@ plt.show()
 # 03. 머신러닝 모델링
 # Baseline Model 1: xgboost model
 # Label Encoding
-
 for f in ["X0", "X1", "X2", "X3", "X4", "X5", "X6", "X8"]:
     lbl = preprocessing.LabelEncoder()
     lbl.fit(list(train_df[f].values))  # Fit label encoder
@@ -175,6 +174,7 @@ xgb_params = {
     'silent': 1
 }
 dtrain = xgb.DMatrix(train_X, train_y, feature_names=train_X.columns.values)
+# feval=xgb_r2_score -> 스코어로 모델 학습
 model = xgb.train(dict(xgb_params, silent=0), dtrain, num_boost_round=100, feval=xgb_r2_score, maximize=True)
 
 # Feature Importances
@@ -222,6 +222,7 @@ train = train.drop('y', axis=1)
 
 # Label Encoding
 for c in train.columns:
+    # object 타입인 경우 라벨인코딩 적용
     if train[c].dtype == 'object':
         lbl = LabelEncoder()
         lbl.fit(list(train[c].values) + list(test[c].values))

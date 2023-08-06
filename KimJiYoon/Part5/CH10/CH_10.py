@@ -22,11 +22,11 @@ plt.rcParams['font.family'] = 'AppleGothic'
 # 01. 데이터 소개 및 분석프로세스 수립
 # 02. 데이터 준비를 위한 EDA 및 전처리
 # 0. 데이터 불러오기
-telemetry = pd.read_csv("/Users/jiyoonkim/Documents/da_study/comFiles/PdM_telemetry.csv", on_bad_lines='skip')
-errors = pd.read_csv("/Users/jiyoonkim/Documents/da_study/comFiles/PdM_errors.csv", on_bad_lines='skip')
-maint = pd.read_csv("/Users/jiyoonkim/Documents/da_study/comFiles/PdM_maint.csv", on_bad_lines='skip')
-failures = pd.read_csv("/Users/jiyoonkim/Documents/da_study/comFiles/PdM_failures.csv", on_bad_lines='skip')
-machines = pd.read_csv("/Users/jiyoonkim/Documents/da_study/comFiles/PdM_machines.csv", on_bad_lines='skip')
+telemetry = pd.read_csv("./../../comFiles/PdM_telemetry.csv", on_bad_lines='skip')
+errors = pd.read_csv("./../../comFiles/PdM_errors.csv", on_bad_lines='skip')
+maint = pd.read_csv("./../../comFiles/PdM_maint.csv", on_bad_lines='skip')
+failures = pd.read_csv("./../../comFiles/PdM_failures.csv", on_bad_lines='skip')
+machines = pd.read_csv("./../../comFiles/PdM_machines.csv", on_bad_lines='skip')
 
 telemetry.head()
 

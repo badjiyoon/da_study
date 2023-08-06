@@ -231,8 +231,7 @@ comp_rep.head()
 comp_rep = telemetry[["datetime", "machineID"]].merge(
     comp_rep,
     on=["datetime", "machineID"],
-    how="outer").fillna(0).sort_values(by=["machineID", "datetime"]
-                                       )
+    how="outer").fillna(0).sort_values(by=["machineID", "datetime"])
 comp_rep
 
 components = ["comp1", "comp2", "comp3", "comp4"]

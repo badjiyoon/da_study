@@ -37,6 +37,7 @@ naval_df.columns = ["lever_position", "ship_speed", "gt_shaft", "gt_rate", "gg_r
                     "hpt_temp", "gt_c_i_temp", "gt_c_o_temp", "hpt_pressure", "gt_c_i_pressure", "gt_c_o_pressure",
                     "gt_exhaust_pressure", "turbine_inj_control", "fuel_flow", "gt_c_decay", "gt_t_decay"]
 # 2) 결측값
+# 왜 썼는지 나눴는지에 대한 설명이 없음
 100 * naval_df.isna().sum() / len(naval_df)
 naval_df = naval_df.dropna()
 naval_df.head()
@@ -48,6 +49,7 @@ naval_df.describe()
 naval_df.info()
 
 # Feature별 유일한 값 개수 확인
+# 각 컬럼을 for로 가져와서 유니크한 값을 본다.
 [(f"{col} :", len(naval_df[col].unique())) for col in naval_df]
 print(naval_df.nunique().sort_values())
 # Feature 제거
@@ -91,7 +93,7 @@ sns.pairplot(naval_df)
 plt.show()
 
 # 2) 상관성 확인
-# 선형성
+# 선형성 : 범위를 줄여서 확인
 sns.pairplot(naval_df[naval_df.columns[2:-2]])
 plt.show()
 
@@ -175,9 +177,8 @@ pca_4_cpnt = PCA(n_components=4, random_state=42)
 # fitting
 navel_pca_data = pca_4_cpnt.fit_transform(X_train)
 
-cmp_lst = []
-[cmp_lst.append('PC' + str(i)) for i in range(1, 5)]
-
+cmp_lst = ['PC' + str(i) for i in range(1, 5)]
+cmp_lst
 navel_pca_X = pd.DataFrame(navel_pca_data, columns=cmp_lst)
 navel_pca_X
 
@@ -217,7 +218,7 @@ params = {'LinearRegression': [{'fit_intercept': [True, False], 'copy_X': [True,
 
 pca_grid_df.head()
 x_pca_cols = pca_grid_df.iloc[:, 1].tolist()
-
+x_pca_cols
 # 2. 모델 생성
 # > 하나의 함수로 여러 Regressor 들에 대해 GridSearchCV 적용
 

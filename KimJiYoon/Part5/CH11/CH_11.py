@@ -230,7 +230,6 @@ def runregressors(X_train, Y_train, X_test, Y_test):
     i_count = 0
     # 총 3 x 2, 6개의 그래프를 생성
     fig, ax = plt.subplots(nrows=3, ncols=2, figsize=(20, 15))
-    plt.show()
     # 각 평가 지표를 저장할 변수들 생성
     result_name = []
     result_summary1 = []

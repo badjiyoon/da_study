@@ -3,7 +3,6 @@
 # Part4. [실습11] COVID-19 관련 이커머스 상품 판매 데이터 분석
 # 인도 아마존 데이터
 from matplotlib import pyplot as plt
-
 plt.rc('font', family='AppleGothic')
 
 # 구매 선호도 예측 모델 생성
@@ -126,7 +125,6 @@ print(amz_data.info())
 dtype_data = amz_data.dtypes.reset_index()
 dtype_data.columns = ["Count", "Column Type"]
 dtype_data = dtype_data.groupby("Column Type").aggregate('count').reset_index()
-
 print(dtype_data)
 # #### 3) 숫자형 Feature
 #   * 데이터 확인
@@ -232,8 +230,10 @@ for i in range(amz_all.shape[0]):
 amz_all['buyability'] = buyability
 # ### 2) 결측값 처리
 missingno.matrix(amz_all, figsize=(30, 10))
+plt.show()
 amz_all.fillna(0, inplace=True)
 missingno.matrix(amz_all, figsize=(30, 10))
+plt.show()
 # ### 3) 데이터 준비
 X = amz_all[amz_all.columns[2:-1]]
 y = amz_all['buyability']

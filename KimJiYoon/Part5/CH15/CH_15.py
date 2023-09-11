@@ -414,6 +414,7 @@ count_keywords
 
 liste_products = df_cleaned['Description'].unique()
 X = pd.DataFrame()
+# 원핫 인코딩이랑 미슷함
 for key, occurence in list_products:
     X.loc[:, key] = list(map(lambda x: int(key.upper() in x), liste_products))
 

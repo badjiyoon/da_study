@@ -686,7 +686,9 @@ df_PCA.head()
 df_PCA = df_PCA.dropna()
 print(df_PCA.columns, df_PCA.shape)
 
+plt.rc('font', family='AppleGothic')
 orderhue = ['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Test values']
+plt.rc('font', family='AppleGothic')
 sns.lmplot(x='PCA_1', y='PCA_2', data=df_PCA, fit_reg=False, legend=False, hue="cluster", hue_order=orderhue,
            scatter_kws={"s": 200, "alpha": 0.3})
 plt.xlabel('PCA component 1', fontsize=14)
@@ -720,6 +722,7 @@ df_TSNE.head()
 df_TSNE["cluster"].value_counts()
 
 orderhue = ['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Test values']
+plt.rc('font', family='AppleGothic')
 sns.lmplot(x='TSNE_1', y='TSNE_2', data=df_TSNE, fit_reg=False, legend=True, hue="cluster", hue_order=orderhue,
            scatter_kws={"s": 200, "alpha": 0.15})
 plt.xlabel('TSNE component 1', fontsize=14)
@@ -904,6 +907,7 @@ dfDB_PCA.head()
 dfDB_PCA['cluster'].value_counts()
 
 db_orderhue = ['Cluster 0', 'Cluster 1', 'Cluster 2', 'Cluster 3', 'Test values']
+plt.rc('font', family='AppleGothic')
 sns.lmplot(x='PCA_1', y='PCA_2', data=dfDB_PCA, fit_reg=False, legend=False, hue="cluster",
            hue_order=db_orderhue, scatter_kws={"s": 200, "alpha": 0.3})
 plt.title('Data clustered with DB-Scan and plotted in 2D after PCA dimensional reduction', fontsize=20)

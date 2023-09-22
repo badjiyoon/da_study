@@ -1,11 +1,4 @@
-# -*- coding: utf-8 -*-
-"""[전체]Ch15. [실습13] 소매 판매 데이터를 활용한 이커머스 고객 Segmentation 분석.ipynb
-* [data.csv] : https://www.kaggle.com/carrie1/ecommerce-data
-#Part4. [실습13] 소매 판매 데이터를 활용한 이커머스 고객 Segmentation 분석
-## 01. 데이터 소개 및 분석프로세스 수립
- : "강의자료 → Ch04. [실습13] 소매 판매 데이터를 활용한 이커머스 고객 Segmentation 분석" 참고
-## 02. 데이터 탐색 및 전처리
-"""
+
 from matplotlib import pyplot as plt
 
 plt.rc('font', family='AppleGothic')
@@ -40,8 +33,9 @@ from wordcloud import WordCloud, STOPWORDS
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.decomposition import PCA
 from IPython.display import display, HTML
-# import plotly.plotly as py
+# import chart_studio.plotly as py
 import plotly.graph_objs as go
+import plotly.offline as py
 
 from plotly.offline import init_notebook_mode, iplot
 
@@ -52,8 +46,7 @@ plt.style.use('fivethirtyeight')
 mpl.rc('patch', edgecolor='dimgray', linewidth=1)
 
 # ID의 경우 스트링으로 변환하여 지정 처리
-df_init = pd.read_csv('../../data/data.csv', encoding="ISO-8859-1",
-                      dtype={'CustomerID': str, 'InvoiceID': str})
+df_init = pd.read_csv('data/data.csv', encoding="ISO-8859-1", dtype={'CustomerID': str, 'InvoiceID': str})
 print('Dataframe dimensions:', df_init.shape)
 
 """### 1. 데이터 준비"""
@@ -71,6 +64,7 @@ df_init.shape[0]
 df_init['InvoiceDate'] = pd.to_datetime(df_init['InvoiceDate'])
 
 # 데이터 타입 정보 T-> 가로로 변경 Transpose 맨앞에 인덱스를 column type을 붙여줌
+# 분석이 진행될 때 명확하게 분석하기 위해서
 col_info = pd.DataFrame(df_init.dtypes).T.rename(index={0: 'column type'})
 display(col_info)
 
@@ -81,20 +75,23 @@ col_info = pd.concat([col_info, pd.DataFrame(df_init.isnull().sum()).T.rename(in
 display(col_info)
 
 # %비율로 나눠서 추가 처리
-col_info = pd.concat(
-    [col_info, pd.DataFrame(df_init.isnull().sum() / df_init.shape[0] * 100).T.rename(index={0: 'null values (%)'})])
+# null 값을 비율로 보는 것
+col_info = pd.concat([col_info, pd.DataFrame(df_init.isnull().sum() / df_init.shape[0] * 100).T.rename(index={0: 'null values (%)'})])
 display(col_info)
 
 display(df_init[:5])
 
 """#### 2) 결측값 처리"""
+# 결측값을 0으로 놔뒀을때 영향이 없으면 0으로 둬도 괜찮
+# 작은 값을 다룰때는 max 값을 넣어준다.
+# 삭제하지 않은 이유는 데이터 수집 비용이 있기 때문
+#  - 하나의 데이터에 대한 비용이 많은 경우 살리고 아니면 제거
 df_init.dropna(axis=0, subset=['CustomerID'], inplace=True)
 print('Shape:', df_init.shape)
 
 col_info = pd.DataFrame(df_init.dtypes).T.rename(index={0: 'column type'})
 col_info = pd.concat([col_info, pd.DataFrame(df_init.isnull().sum()).T.rename(index={0: 'null values (nb)'})])
-col_info = pd.concat(
-    [col_info, pd.DataFrame(df_init.isnull().sum() / df_init.shape[0] * 100).T.rename(index={0: 'null values (%)'})])
+col_info = pd.concat([col_info, pd.DataFrame(df_init.isnull().sum() / df_init.shape[0] * 100).T.rename(index={0: 'null values (%)'})])
 display(col_info)
 
 df_init.dtypes
@@ -103,7 +100,8 @@ df_init.isnull().sum()
 
 """#### 3) 중복값"""
 df_init['Country'].duplicated().value_counts()
-# 같은 송장에 여라가지 제품을 판것을 확인할 수 있음
+# 같은 송장에 여러가지 제품을 판것을 확인할 수 있음
+# 영수증은 하나이지만 여러 제품을 샀기 때문에 제품에 대한 송장 번호가 중복
 df_init['InvoiceNo'].duplicated().value_counts()
 
 # 전체 중복의 경우 중복 데이터 삭제
@@ -112,13 +110,20 @@ df_init.drop_duplicates(inplace=True)
 
 """#### 4) 나라별 지도 시각화"""
 # 카운트가 없음
+# 가벼운 마음으로 봐도 될것
+# group by 를 하면 index가 붙게 된다.
+# 카운트를 하게되면 인덱스별로 카운트 하게 된다.
+# customerId로 group by 됨
+# 나라별 주문 번호를 알 수 있다.
 temp_cou = df_init[['CustomerID', 'InvoiceNo', 'Country']].groupby(['CustomerID', 'InvoiceNo', 'Country']).count()
 temp_cou
 # reset_index를 함으로써 위에 작업한부분이 데이터화가 됨
 temp_cou = temp_cou.reset_index(drop=False)
 temp_cou
 
+# 나라별로 카운트 한다.
 countries = temp_cou['Country'].value_counts()
+# 37개의 나라인 것을 알수 있다
 print('No. of countries in the dataframe: {}'.format(len(countries)))
 
 """Let's display the result on a chloropleth map"""
@@ -150,22 +155,31 @@ layout = dict(title='Number of orders per country',
               geo=dict(showframe=True, projection={'type': 'mercator'}))
 
 choromap = go.Figure(data=[data], layout=layout)
-iplot(choromap, validate=False)
+
+# The plotly.plotly module is deprecated,
+# please install the chart-studio package and use the
+# chart_studio.plotly module instead.
+# chart_studio은 파이참에서 불가능하다
+py.iplot(choromap, validate=False)
 
 df_init
 
 """> 각 항목별 데이터 개수"""
 # 각 독립된 항목의 수
+# 고객의 수
 len(df_init['CustomerID'].value_counts())
+
 pd.DataFrame([{'products': len(df_init['StockCode'].value_counts()),
                'transactions': len(df_init['InvoiceNo'].value_counts()),
                'customers': len(df_init['CustomerID'].value_counts()), }],
              columns=['products', 'transactions', 'customers'], index=['quantity'])
 
 """> 고객 주문번호별 상품 개수"""
+# 고객의 주문번호 별 상품 갯수
 temp_pro = df_init.groupby(by=['CustomerID', 'InvoiceNo'], as_index=False)['InvoiceDate'].count()
 nb_products_per_basket = temp_pro.rename(columns={'InvoiceDate': 'Number of products'})
 nb_products_per_basket[:10].sort_values('CustomerID')
+
 
 """> 고객 주문번호별 주문 취소 여부와 주문 취소율"""
 # InvoiceNo -> c인경우 주문 취소를 의미한다.
@@ -178,8 +192,9 @@ n2 = nb_products_per_basket.shape[0]
 
 print('Number of orders canceled: {}/{} ({:.2f}%) '.format(n1, n2, n1 / n2 * 100))
 
-# Quantity 항목이 -로 처리되어있음
+# 주문 취소된 항목은 Quantity 항목이 -로 처리되어있음
 display(df_init.sort_values('CustomerID')[:5])
+
 
 """#### 5) 주문 취소된 항목 삭제한 새로운 컬럼 만들기"""
 df_cleaned = df_init.copy(deep=True)
@@ -192,7 +207,7 @@ doubtfull_entry = []
 
 for index, col in df_init.iterrows():
     # 주문 수량이 0보다 크거나 할인의 경우
-    # Discount의 경우 주문 취소가 되지 않음
+    # 할인한 상품의 경우 주문 취소가 되지 않음
     if (col['Quantity'] > 0) or col['Description'] == 'Discount':
         continue
     # 테스트 데이터를 만듬 주문데이터의 후보군을 만듬
@@ -229,24 +244,33 @@ df_cleaned.drop(entry_to_remove, axis=0, inplace=True)
 df_cleaned.drop(doubtfull_entry, axis=0, inplace=True)
 
 # StockCode D의 경우 할인 항목 취소 불가
+# 
 remaining_entries = df_cleaned[(df_cleaned['Quantity'] < 0) & (df_cleaned['StockCode'] != 'D')]
 print("nb of entries to delete: {}".format(remaining_entries.shape[0]))
 remaining_entries.head(5)
 
 remaining_entries.sort_index(axis=0)[:5]
 
+# 관심있는 데이터 완성
 df_cleaned.head(5)
 
 """#### 6) StockCode 내 데이터 수정"""
-
 df_cleaned.info()
 
+# stockCode의 문자열로 된걸 살펴보면
 list_special_codes = df_cleaned[df_cleaned['StockCode'].str.contains('^[a-zA-Z]+', regex=True)]['StockCode'].unique()
 list_special_codes
 
 # Stock Code Descrition을 맵핑해본 결과
 for code in list_special_codes:
     print("{:<15} -> {:<30}".format(code, df_cleaned[df_cleaned['StockCode'] == code]['Description'].unique()[0]))
+# POST            -> POSTAGE
+# D               -> Discount
+# C2              -> CARRIAGE
+# M               -> Manual
+# BANK CHARGES    -> Bank Charges
+# PADS            -> PADS TO MATCH ALL CUSHIONS
+# DOT             -> DOTCOM POSTAGE
 
 """#### 7) 구매액 컬럼 생성"""
 df_cleaned['TotalPrice'] = df_cleaned['UnitPrice'] * (df_cleaned['Quantity'] - df_cleaned['QuantityCanceled'])
@@ -255,6 +279,7 @@ df_cleaned.sort_values('CustomerID')[:5]
 df_cleaned.info()
 
 """#### 8) 주문일 컬럼 데이터타입 변경"""
+# 숫자 형태로 변경 -> 주문일 순서 알수 있음
 df_cleaned['InvoiceDate_int'] = df_cleaned['InvoiceDate'].astype('int64')
 df_cleaned[:5]
 
@@ -276,7 +301,9 @@ basket_price.tail(6)
 basket_price.max(), basket_price.min()
 
 """#### 10) 키워드 생성"""
-import nltk
+# 타겟 데이터 확인
+# 자연어 처리를 통해서 분석
+import nltk # 자연어 처리 라이브러리
 nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt')
 df_products = pd.DataFrame(df_init['Description'].unique()).rename(columns={0: 'Description'})
@@ -285,21 +312,25 @@ df_products
 """> 데이터 준비를 위한 자연어처리 내용 소개"""
 # 명사 관련 처리 예졔
 is_noun = lambda pos: pos[:2] == 'NN'
+# NN 은 명사인지를 구분하는 것 -> 관사 명사 품사에 따라 표현되어 있음
 ex = "WHITE HANGING HEART T-LIGHT HOLDER"
 lines = ex.lower()
-tokenized = nltk.word_tokenize(lines)
+tokenized = nltk.word_tokenize(lines) # 문장에서 토큰(분석의 작은 단위)을 만든다.
+# nltk에 pos에 tokenized한 걸 넣어주고 noun이면 넣어줘라
 nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
-
+# 전체 문장
 lines
-
+# 토크나이져한 것들
 tokenized
-
 # POS(part-of-speech)는 품사를 말한다.
 nltk.pos_tag(tokenized)
-
+# 명사
 nouns
 
-# stemming : 어간(활용어에서 변하지 않는 부분)추출 - 어형이 변형된 단어로부터 접사 등을 제거하고 그 단어의 어간을 분리해 내는 것
+# stemming
+# 어간(활용어에서 변하지 않는 부분)추출
+# - 어형이 변형된 단어로부터 접사 등을 제거하고 그 단어의 어간을 분리해 내는 것
+# 변형된 단어들에 대한 연관성 studies, studing, study -> study
 stemmer = nltk.stem.SnowballStemmer("english")
 print("The stemmed form of studying is: {}".format(stemmer.stem("studying")))
 print("The stemmed form of studies is: {}".format(stemmer.stem("studies")))
@@ -335,6 +366,7 @@ def keywords_inventory(dataframe, colonne='Description'):
 
         for t in nouns:
             t = t.lower()
+            # 명사의 어간을 꺼낸다
             racine = stemmer.stem(t)
 
             if racine in keywords_roots:
@@ -345,8 +377,11 @@ def keywords_inventory(dataframe, colonne='Description'):
                 keywords_roots[racine] = {t}
                 count_keywords[racine] = 1
 
+    # 저장한 keyworkds root를 다시 가져와서
     for s in keywords_roots.keys():
         # 같은 어간을 가지는 것들이 2개 이상일 때
+        # 길이가 최소의 길이보다 작으면 키워드를
+        # category_keys에 넣는다
         if len(keywords_roots[s]) > 1:
             min_length = 1000
             for k in keywords_roots[s]:
@@ -362,7 +397,9 @@ def keywords_inventory(dataframe, colonne='Description'):
     print("'{}' 컬럼 안의 Keyword 수 : {}".format(colonne, len(category_keys)))
     return category_keys, keywords_roots, keywords_select, count_keywords
 
-
+# Description에서 무엇을 샀는지 확인하기 위한것
+# 명사 키워드를 다 저장한다.
+# 'Description' 컬럼 안의 Keyword 수 : 1483
 keywords, keywords_roots, keywords_select, count_keywords = keywords_inventory(df_products)
 
 keywords_select.items()
@@ -375,9 +412,7 @@ list_products.sort(key=lambda x: x[1], reverse=True)
 liste = sorted(list_products, key=lambda x: x[1], reverse=True)
 
 liste
-
-plt.rc('font', family='AppleGothic')
-plt.rc('font', weight='normal')
+# 단어와 갯수가 있으면 그래프 가능
 fig, ax = plt.subplots(figsize=(10, 30))
 y_axis = [i[1] for i in liste[:125]]
 x_axis = [k for k, i in enumerate(liste[:125])]
@@ -385,33 +420,16 @@ x_label = [i[0] for i in liste[:125]]
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=13)
 plt.yticks(x_axis, x_label)
-plt.xlabel("발생 횟수", fontsize=18, labelpad=10)
+plt.xlabel("raise count", fontsize=18, labelpad=10)
 ax.barh(x_axis, y_axis, align='center')
 ax = plt.gca()
 ax.invert_yaxis()
 
-plt.title("단어 발생 빈도 그래프", bbox={'facecolor': 'k', 'pad': 5}, color='w', fontsize=25)
+plt.title("graph", bbox={'facecolor': 'k', 'pad': 5}, color='w', fontsize=25)
 plt.show()
 
 count_keywords
-
-# list_products = []
-
-# # Loop through the count_keywords and check the different conditions
-# for k,v in count_keywords.items():
-#     word = keywords_select[k]
-#     if word in ['pink', 'blue', 'tag', 'green', 'orange']:
-#         continue
-#     if len(word) < 3 or v < 13:
-#         continue
-#     if ('+' in word) or ('/' in word):
-#         continue
-#     list_products.append([word, v])
-
-# # list most kept words
-# list_products.sort(key = lambda x:x[1], reverse = True)
-# print('words kept:', len(list_products))
-
+################################################################################
 liste_products = df_cleaned['Description'].unique()
 X = pd.DataFrame()
 # 원핫 인코딩이랑 미슷함

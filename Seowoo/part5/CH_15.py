@@ -433,12 +433,14 @@ count_keywords
 liste_products = df_cleaned['Description'].unique()
 X = pd.DataFrame()
 # 원핫 인코딩이랑 미슷함
+# 키워드를 컬럼으로 새운디 있으면 1로 표현
 for key, occurence in list_products:
     X.loc[:, key] = list(map(lambda x: int(key.upper() in x), liste_products))
 
 threshold = [0, 1, 2, 3, 5, 10]
 label_col = []
 
+# 평균가격에 대한 threshold를 만들어서 평균이 속하면 1 아니면 0
 for i in range(len(threshold)):
     if i == len(threshold) - 1:
         col = '.>{}'.format(threshold[i])
@@ -455,8 +457,10 @@ for i, prod in enumerate(liste_products):
         if j == len(threshold): break
     X.loc[i, label_col[j - 1]] = 1
 
-"""### 2. K-Means Clustering 과 PCA
 
+"""### 2. K-Means Clustering 과 PCA
+분집과의 거리가 얼마나 효율적으로 나눠져있는지 나타내는 것
+개별 데이터가 가지는 군집화 지표
 #### 1) Silhouette Score 기반 K
 """
 
@@ -468,8 +472,11 @@ for n_clusters in range(3, 10):
     clusters = kmeans.predict(X)
     silhouette_avg = silhouette_score(X, clusters)
     print("클러스터 개수 =", n_clusters, "silhouette 평균 점수 :", silhouette_avg)
-
+    # 실루엣 점수가 1로 가까울수록 군집화가 잘되었다는 지표
+# 평균점수가 높은걸 택하면 5가 나온다
 n_clusters = 5
+# 정확한 성능지표가 나오지 않음
+# 그냥 5라고 설정함
 
 kmeans = KMeans(init='k-means++', n_clusters=n_clusters, n_init=30)
 kmeans.fit(X)
@@ -501,17 +508,23 @@ plt.xlabel('주성분 개수', fontsize=14)
 plt.legend(loc='upper left', fontsize=13);
 plt.show()
 
+# 어느순간 부터는 주성분을 포함시켜도 분산력이 커지지 않는다.
+# 50개 부터는 완만하게 증가한다.
 pca = PCA(n_components=50)
 matrix_9D = pca.fit_transform(X)
 mat = pd.DataFrame(matrix_9D)
 mat['cluster'] = pd.Series(clusters)
 
 import matplotlib.patches as mpatches
-
+# 클러스터링 시각화
 sns.set_style("white")
 sns.set_context("notebook", font_scale=1, rc={"lines.linewidth": 2.5})
 
-LABEL_COLOR_MAP = {0: 'r', 1: 'gold', 2: 'b', 3: 'k', 4: 'c', 5: 'g'}
+# 여기서 왜 5까지 밖에 맵핑 안했는지 참 
+# 개빡치게
+LABEL_COLOR_MAP = {0: 'r', 1: 'gold', 2: 'b', 3: 'k', 4: 'c', 5: 'g', 6:'b', 7:'b', 8:'b'}
+
+print(mat['cluster'])
 label_color = [LABEL_COLOR_MAP[l] for l in mat['cluster']]
 
 fig = plt.figure(figsize=(15, 8))
@@ -542,12 +555,14 @@ plt.legend(handles=comp_handler, bbox_to_anchor=(1.1, 0.97),
 
 plt.show()
 
+# liste_products 유니크 한 제품들
 corresp = dict()
 for key, val in zip(liste_products, clusters):
     corresp[key] = val
 
 df_cleaned['categ_product'] = df_cleaned.loc[:, 'Description'].map(corresp)
-
+# 클러스터에 속할때 total price를 구한다.
+# 다섯개의 클러스터에 얼마나 팔렸는지 확인
 for i in range(5):
     col = 'categ_{}'.format(i)
     df_temp = df_cleaned[df_cleaned['categ_product'] == i]
@@ -577,6 +592,8 @@ basket_price.sort_values('CustomerID', ascending=True)[:5]
 
 print(basket_price['InvoiceDate'].min(), '->', basket_price['InvoiceDate'].max())
 
+# 총 구매 액수를 평균
+# 클러스터별로 얼마를 구매했는지
 # number of visits and stats on the basket amount / users
 transactions_per_user = basket_price.groupby(by=['CustomerID'])['Basket Price'].agg(
     ['count', 'min', 'max', 'mean', 'sum'])
@@ -590,13 +607,16 @@ basket_price.groupby(by=['CustomerID'])['categ_0'].sum()
 transactions_per_user.sort_values('CustomerID', ascending=True)[:5]
 
 last_date = basket_price['InvoiceDate'].max().date()
-
+# 첫 구매일로부터 얼마나 지났는지
 first_registration = pd.DataFrame(basket_price.groupby(by=['CustomerID'])['InvoiceDate'].min())
 last_purchase = pd.DataFrame(basket_price.groupby(by=['CustomerID'])['InvoiceDate'].max())
-
+#
+first_registration
+last_purchase
 test = first_registration.applymap(lambda x: (last_date - x.date()).days)
 test2 = last_purchase.applymap(lambda x: (last_date - x.date()).days)
-
+test
+test2
 transactions_per_user.loc[:, 'LastPurchase'] = test2.reset_index(drop=False)['InvoiceDate']
 transactions_per_user.loc[:, 'FirstPurchase'] = test.reset_index(drop=False)['InvoiceDate']
 
@@ -646,6 +666,7 @@ plt.xlabel('Principal components', fontsize=14)
 plt.legend(loc='best', fontsize=13)
 plt.show()
 
+# 11번째 가면 설명가능
 n_clusters = 11
 kmeans = KMeans(init='k-means++', n_clusters=n_clusters, n_init=100)
 kmeans.fit(scaled_X_selected)
@@ -701,12 +722,14 @@ plt.legend(handles=comp_handler, bbox_to_anchor=(1.1, 0.9),
            fontsize=13, bbox_transform=plt.gcf().transFigure)
 
 plt.tight_layout()
+plt.show()
 
+## 빨리 지나감
+# .. 퇴근하고 싶나봄
 selected_customers.loc[:, 'cluster'] = clusters_clients
 
+
 """### 3. 고객군 분류 예측 모델링"""
-
-
 class Class_Fit(object):
     def __init__(self, clf, params=None):
         if params:
@@ -735,7 +758,7 @@ class Class_Fit(object):
         self.predictions = self.grid.predict(X)
         print("Precision: {:.2f} % ".format(100 * metrics.accuracy_score(Y, self.predictions)))
 
-
+# 평균 구매, 클러스터
 columns = ['mean', 'categ_0', 'categ_1', 'categ_2', 'categ_3', 'categ_4']
 X = selected_customers[columns]
 Y = selected_customers['cluster']

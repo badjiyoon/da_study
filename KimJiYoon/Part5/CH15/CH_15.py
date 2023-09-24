@@ -683,6 +683,7 @@ plt.legend(handles=comp_handler, bbox_to_anchor=(1.1, 0.9),
            fontsize=13, bbox_transform=plt.gcf().transFigure)
 
 plt.tight_layout()
+plt.show()
 
 selected_customers.loc[:, 'cluster'] = clusters_clients
 
@@ -769,12 +770,12 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
 class_names = [i for i in range(11)]
 
 cnf_matrix = confusion_matrix(Y_test, svc.predictions)
-
 np.set_printoptions(precision=2)
 
 plt.figure(figsize=(8, 8))
 
 plot_confusion_matrix(cnf_matrix, classes=class_names, normalize=False, title='Confusion matrix')
+plt.show()
 
 lr = Class_Fit(clf=linear_model.LogisticRegression)
 lr.grid_search(parameters=[{'C': np.logspace(-2, 2, 20)}], Kfold=5)

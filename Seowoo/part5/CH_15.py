@@ -330,7 +330,7 @@ nouns
 # stemming
 # 어간(활용어에서 변하지 않는 부분)추출
 # - 어형이 변형된 단어로부터 접사 등을 제거하고 그 단어의 어간을 분리해 내는 것
-# 변형된 단어들에 대한 연관성 studies, studing, study -> study
+# 변형된 단어들에 대한 연관성 studies, studing, study -> studi
 stemmer = nltk.stem.SnowballStemmer("english")
 print("The stemmed form of studying is: {}".format(stemmer.stem("studying")))
 print("The stemmed form of studies is: {}".format(stemmer.stem("studies")))
@@ -432,7 +432,7 @@ count_keywords
 ################################################################################
 liste_products = df_cleaned['Description'].unique()
 X = pd.DataFrame()
-# 원핫 인코딩이랑 미슷함
+# 원핫 인코딩이랑 빗슷함
 # 키워드를 컬럼으로 새운디 있으면 1로 표현
 for key, occurence in list_products:
     X.loc[:, key] = list(map(lambda x: int(key.upper() in x), liste_products))
@@ -520,8 +520,7 @@ import matplotlib.patches as mpatches
 sns.set_style("white")
 sns.set_context("notebook", font_scale=1, rc={"lines.linewidth": 2.5})
 
-# 여기서 왜 5까지 밖에 맵핑 안했는지 참 
-# 개빡치게
+# 여기서 왜 5까지 밖에 맵핑 안했는지 참
 LABEL_COLOR_MAP = {0: 'r', 1: 'gold', 2: 'b', 3: 'k', 4: 'c', 5: 'g', 6:'b', 7:'b', 8:'b'}
 
 print(mat['cluster'])
@@ -607,6 +606,7 @@ basket_price.groupby(by=['CustomerID'])['categ_0'].sum()
 transactions_per_user.sort_values('CustomerID', ascending=True)[:5]
 
 last_date = basket_price['InvoiceDate'].max().date()
+last_date
 # 첫 구매일로부터 얼마나 지났는지
 first_registration = pd.DataFrame(basket_price.groupby(by=['CustomerID'])['InvoiceDate'].min())
 last_purchase = pd.DataFrame(basket_price.groupby(by=['CustomerID'])['InvoiceDate'].max())
@@ -724,8 +724,6 @@ plt.legend(handles=comp_handler, bbox_to_anchor=(1.1, 0.9),
 plt.tight_layout()
 plt.show()
 
-## 빨리 지나감
-# .. 퇴근하고 싶나봄
 selected_customers.loc[:, 'cluster'] = clusters_clients
 
 
